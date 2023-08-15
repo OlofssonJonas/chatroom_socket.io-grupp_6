@@ -1,7 +1,11 @@
 import React from 'react'
+// import ChatPage from '../ChatPage/ChatPage';
 
-export const Lobby = () => {
+
+const Lobby = ({socket, username}) => {
   return (
     <div>Lobby</div>
   )
 }
+
+export default Lobby

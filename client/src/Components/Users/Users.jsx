@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from 'react'
 import { io } from "socket.io-client";
 import "./Users.css";
 import { Lobby } from "../Lobby/Lobby";
 
 export const Users = () => {
+  const [username, setUsername] = useState('')
+
+
   //Calling server
   const socket = io("http://localhost:3000/", { autoConnect: false });
   const [newUsername, setNewUsername] = useState("");
-  const [showLobby, setShowLobby] = useState(false);
 
   const start_chat_with_user = () => {
     socket.connect();
@@ -34,20 +36,13 @@ export const Users = () => {
 
   return (
     <>
-      {!showLobby ? (
-        <div>
-          <h1>Hej och välkommen, välj ett användarnamn</h1>
-          <input
-            type="text"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-            placeholder="Namn"
-          />
-          <button onClick={start_chat_with_user}>Börja chatta</button>
-        </div>
-      ) : (
-        <Lobby />
-      )}
+      <input
+        type="text"
+        value={newUsername}
+        onChange={(e) => setNewUsername(e.target.value)}
+        placeholder="Namn"
+      />
+      <button onClick={start_chat_with_user}>Börja chatta</button>
     </>
   );
 };
