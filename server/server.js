@@ -20,11 +20,11 @@ io.on("connection", (socket) => {
 
   io.emit("new_user", "hej hej");
 
-  // socket.on("userName", (username) => {
-  //      console.log(username);
+   socket.on("join_lobby", (username) => {
+        console.log(username);
 
   //     socket.broadcast.emit("new_user_joined_chat", username);
-
+   })
   //Nikela skriver
   //lyssnar
   socket.on("start_chat", (username) => {
