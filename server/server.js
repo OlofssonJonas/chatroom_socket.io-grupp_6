@@ -27,10 +27,10 @@ io.on("connection", (socket) => {
 
   //Nikela skriver
   //lyssnar
-  // socket.on("start_chat", (username) => {
-  //   console.log(username);
-  //   socket.broadcast.emit("new_user_joined_chat");
-  // });
+  socket.on("start_chat", (username) => {
+    console.log(username);
+    socket.broadcast.emit("new_user_joined_chat");
+  });
 });
 
 server.listen(3000, () => console.log("Server is up and running"));
