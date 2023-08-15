@@ -9,7 +9,7 @@ const HomePage = () => {
 
   return (
     <>
-    <h1>Hej och välkommen, välj ett användarnamn</h1>
+    <h1></h1>
 
     </>
   )
