@@ -6,34 +6,37 @@ import Lobby from '../Lobby/Lobby';
 export const Users = () => {
   const [username, setUsername] = useState('')
 
-  
 
   //Calling server
   const socket = io("http://localhost:3000/", { autoConnect: false });
-
-const start_chat_with_user = () => {
-  socket.connect()
-  console.log(username)
-  // if(username.trim() !== '') {
-  // console.log("Startar chatt med användare", username);
-   
-  // }else {
-  //   console.log("Användarnamnet är inte tillåtet")
-  // }
+  const [newUsername, setNewUsername] = useState("");
   
-}
+  const start_chat_with_user = () => {
+    socket.connect();
+    console.log("Starting chat with user:", newUsername);
+  };
+  
+  //sending username to server(terminal). 
+  socket.emit("start_chat_with_user", newUsername);
 
-  // useEffect(() => {
-  //   socket.on("new_user", (username) => {
-  //     console.log(username);
-  //   });
-  // }, []);
 
-
+  //events that listens on server "emits". subscribe. All "on" inside this
+  useEffect(() => {
+    socket.on("start_chat_with_user", (username) => {
+      //Should send to all clients
+      socket.broadcast.emit("new_user_joined_chat", username);
+    });
+  }, []);
 
   return (
     <>
-      <input type="text" placeholder="Namn" onChange={(e) => {setUsername(e.target.value)}}></input>
+      <input
+        type="text"
+        value={newUsername}
+        onChange={(e) => setNewUsername(e.target.value)}
+        placeholder="Namn"
+      />
+
       <button onClick={start_chat_with_user}>Börja chatta</button>
    
       <Lobby socket={socket} username={username}/>
@@ -42,4 +45,4 @@ const start_chat_with_user = () => {
   );
 };
 
-export default Users
+export default Users;

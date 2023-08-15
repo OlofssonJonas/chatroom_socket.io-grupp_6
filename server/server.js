@@ -16,20 +16,12 @@ const io = new Server(server, {
 app.use(cors());
 
 io.on("connection", (socket) => {
-  console.log("new client connecten", socket.id);
+  console.log("new client connected", socket.id);
+  
+  socket.on("start_chat_with_user", (username) => {
 
-  io.emit("new_user", "hej hej");
-
-   socket.on("join_lobby", (username) => {
-        console.log(username);
-
-  //     socket.broadcast.emit("new_user_joined_chat", username);
-   })
-  //Nikela skriver
-  //lyssnar
-  socket.on("start_chat", (username) => {
     console.log(username);
-    socket.broadcast.emit("new_user_joined_chat");
+    socket.broadcast.emit("start_chat_with_user", username);
   });
 });
 
