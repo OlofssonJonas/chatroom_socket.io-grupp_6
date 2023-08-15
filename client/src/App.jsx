@@ -1,11 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+import { io } from "socket.io-client";
+import { Users } from './Components/Users/Users';
+import HomePage from './Components/HomePage/HomePage';
+
 
 function App() {
 
   return (
-   <>
-   <h1>Chat App</h1>
+    <>
+      <HomePage />
+      <Users />
    </>
   )
   }
