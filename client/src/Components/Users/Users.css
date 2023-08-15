@@ -1,0 +1,16 @@
+body{
+    /* background-image: linear-gradient(to right, red, lightblue); */
+    background-color: beige;
+}
+.users {
+    height: 500px;
+    width: 300px;
+    background-color: green;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.username {
+    display: flex;
+    justify-content: flex-start;
+}
