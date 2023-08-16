@@ -4,7 +4,7 @@ import "./Users.css";
 import Lobby from "../Lobby/Lobby";
 
 export const Users = () => {
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
   const [showLobby, setShowLobby] = useState(false);
 
   //Calling server
@@ -18,13 +18,16 @@ export const Users = () => {
   };
 
   const checkUserInput = () => {
-    if (newUsername != "") {
+    if (newUsername.trim() != "") {
       setShowLobby(true);
+
+      //sending username to server(terminal).
+      socket.emit("start_chat_with_user", newUsername);
+    } else {
+      alert("Användarnamn får inte vara tomt.");
     }
   };
 
-  //sending username to server(terminal).
-  socket.emit("start_chat_with_user", newUsername);
 
   //events that listens on server "emits". subscribe. All "on" inside this
   useEffect(() => {
@@ -38,6 +41,7 @@ export const Users = () => {
     <>
       {!showLobby ? (
         <div>
+          <h1>Hej och välkommen, välj ett användarnamn</h1>
           <input
             type="text"
             value={newUsername}
