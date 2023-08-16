@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     socket.broadcast.to("start_chat_with_user", username);
   });
     
-    socket.on("start_chat_with_room", (newUsername, newRoom) => {
+    socket.on("start_chat_with_room", (username, room) => {
       console.log('hej')
       console.log(`User with name: ${username} has joined the ${room}`);
   });

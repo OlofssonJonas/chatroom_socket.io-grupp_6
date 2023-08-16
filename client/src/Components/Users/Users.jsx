@@ -26,32 +26,31 @@ export const Users = () => {
       alert("Användarnamn får inte vara tomt.");
     }
   };
-
-  //events that listens on server "emits". subscribe. All "on" inside this
-  // useEffect(() => {
-  //   socket.on("start_chat_with_user", (username) => {
-  //     //Should send to all clients
-  //     socket.broadcast.emit("new_user_joined_chat", username);
-  //   });
-  // }, []);
-
+  
   return (
     <>
-      {!showLobby ? (
-        <div>
-          <h1>Hej och välkommen, välj ett användarnamn</h1>
-          <input
-            type="text"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-            placeholder="Namn"
-          />
-          <button onClick={start_chat_with_user}>Börja chatta</button>
-        </div>
-      ) : (
-        <ChatPage socket={socket} newUsername={newUsername} room={room} />
-      )}
-    </>
+    {!showLobby ? (
+		<div className="join-container">
+			<header className="join-header">
+				<h1><i className="fas fa-smile">Hej och välkommen, välj ett användarnamn</i>d</h1>
+			</header>
+			<main className="join-main">
+				<form>
+					<div className="form-control">
+						<input
+							type="text"
+              onChange={(e) => setNewUsername(e.target.value)}
+							placeholder="Enter username..."
+						/>
+					</div>
+					<button className="btn" onClick={start_chat_with_user}>Börja chatta</button>
+				</form>
+			</main>
+		</div>
+        ) : (
+          <ChatPage socket={socket} newUsername={newUsername} room={room} />
+          )}
+          </>
   );
 };
 
