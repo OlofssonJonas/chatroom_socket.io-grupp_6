@@ -21,10 +21,14 @@ io.on("connection", (socket) => {
 
   console.log("new client connected", socket.id);
 
-  socket.on("start_chat_with_user", (username) => {
-    console.log(username);
-    socket.broadcast.emit("start_chat_with_user", username);
+  socket.on("start_chat_with_user", (username, room) => {
+    console.log(`User with name: ${username} has joined the ${room}`);
+    socket.broadcast.to("start_chat_with_user", username);
   });
-});
-
-server.listen(3000, () => console.log("Server is up and running"));
+    
+    socket.on("start_chat_with_room", (newUsername, newRoom) => {
+      console.log('hej')
+      console.log(`User with name: ${username} has joined the ${room}`);
+  });
+})
+  server.listen(3000, () => console.log("Server is up and running"));
