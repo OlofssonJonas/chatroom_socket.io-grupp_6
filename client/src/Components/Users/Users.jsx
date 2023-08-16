@@ -3,7 +3,6 @@ import { io } from "socket.io-client";
 import "./Users.css";
 import ChatPage from "../ChatPage/ChatPage";
 
-
 export const Users = () => {
   const [showLobby, setShowLobby] = useState(false);
 
@@ -28,7 +27,6 @@ export const Users = () => {
     }
   };
 
-
   //events that listens on server "emits". subscribe. All "on" inside this
   // useEffect(() => {
   //   socket.on("start_chat_with_user", (username) => {
@@ -51,7 +49,7 @@ export const Users = () => {
           <button onClick={start_chat_with_user}>Börja chatta</button>
         </div>
       ) : (
-       <ChatPage />
+        <ChatPage />
       )}
     </>
   );
