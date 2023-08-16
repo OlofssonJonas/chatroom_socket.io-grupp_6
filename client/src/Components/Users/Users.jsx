@@ -5,6 +5,7 @@ import ChatPage from "../ChatPage/ChatPage";
 
 export const Users = () => {
   const [showLobby, setShowLobby] = useState(false);
+  const room = 'Lobby' 
 
   //Calling server
   const socket = io("http://localhost:3000/", { autoConnect: false });
@@ -21,7 +22,7 @@ export const Users = () => {
       setShowLobby(true);
 
       //sending username to server(terminal).
-      socket.emit("start_chat_with_user", newUsername);
+      socket.emit("start_chat_with_user", newUsername, room);
     } else {
       alert("Användarnamn får inte vara tomt.");
     }
@@ -49,7 +50,7 @@ export const Users = () => {
           <button onClick={start_chat_with_user}>Börja chatta</button>
         </div>
       ) : (
-        <ChatPage />
+        <ChatPage socket={socket} newUsername={newUsername} room={room} />
       )}
     </>
   );
