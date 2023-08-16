@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./Users.css";
-import Lobby from "../Lobby/Lobby";
+import ChatPage from "../ChatPage/ChatPage";
 
 export const Users = () => {
-  // const [username, setUsername] = useState("");
   const [showLobby, setShowLobby] = useState(false);
 
   //Calling server
@@ -28,14 +27,13 @@ export const Users = () => {
     }
   };
 
-
   //events that listens on server "emits". subscribe. All "on" inside this
-  useEffect(() => {
-    socket.on("start_chat_with_user", (username) => {
-      //Should send to all clients
-      socket.broadcast.emit("new_user_joined_chat", username);
-    });
-  }, []);
+  // useEffect(() => {
+  //   socket.on("start_chat_with_user", (username) => {
+  //     //Should send to all clients
+  //     socket.broadcast.emit("new_user_joined_chat", username);
+  //   });
+  // }, []);
 
   return (
     <>
@@ -51,7 +49,7 @@ export const Users = () => {
           <button onClick={start_chat_with_user}>Börja chatta</button>
         </div>
       ) : (
-        <Lobby />
+        <ChatPage />
       )}
     </>
   );
