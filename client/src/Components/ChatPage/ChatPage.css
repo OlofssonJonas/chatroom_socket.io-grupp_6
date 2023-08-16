@@ -1,4 +1,4 @@
-*{
+/* *{
     margin: 0;
     padding: 0;
 }
@@ -13,6 +13,24 @@ header{
     top: 0;
 }
 /* det kommer nån kopnstig padding därför har jag detta */
-#root {
+
+*{
+    margin: 0;
     padding: 0;
+}
+
+
+.div1{
+    /* background-color:  transparent;
+     */
+     background-color: rgba(0, 0, 0, 0.315); 
+     max-width: 80vh;
+    min-height: 60vh;
+    padding: 30px;
+    margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px; 
 }
