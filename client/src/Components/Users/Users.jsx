@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { useState } from "react";
 import "./Users.css";
 import ChatPage from "../ChatPage/ChatPage";
+import { useSocket } from "../../Context/ContextForSocket";
 
 export const Users = () => {
   const [showLobby, setShowLobby] = useState(false);
   const room = 'Lobby' 
 
-  //Calling server
-  const socket = io("http://localhost:3000/", { autoConnect: false });
+  const socket = useSocket() //using socket from context!
   const [newUsername, setNewUsername] = useState("");
 
   const start_chat_with_user = () => {
