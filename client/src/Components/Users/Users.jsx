@@ -48,7 +48,8 @@ export const Users = () => {
 			</main>
 		</div>
         ) : (
-          <ChatPage socket={socket} newUsername={newUsername} room={room} />
+          
+          <ChatPage newUsername={newUsername} room={room} />
           )}
           </>
   );

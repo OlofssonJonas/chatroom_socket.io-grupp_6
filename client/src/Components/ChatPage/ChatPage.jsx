@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "./ChatPage.css";
+import { useSocket } from "../../Context/ContextForSocket";
 
-const ChatPage = ({ socket, newUsername, room }) => {
+const ChatPage = ({ newUsername, room }) => {
   const [ newRoom, setNewroom ] = useState('Lobbyn')
   const [ roomList, setRoomlist ] = useState(['Lobbyn'])
+
+  //accessing socket-obj from context
+  const socket = useSocket();
  
+  //listens for rooms-list updates from server
   useEffect(() => {
     socket.on('roomList', (rooms) => {
       setRoomlist(rooms)
     })
   }, [])
+
 
   const checkRoomInput = () => {
     console.log(newRoom)
@@ -17,7 +23,7 @@ const ChatPage = ({ socket, newUsername, room }) => {
       //sending username and room to the server(terminal).
       socket.emit("start_chat_with_room", newRoom);
     } else {
-      alert("Fältet får inte vara tomt.");
+      alert("Fältet får intae vara tomt.");
     }
   };
   
@@ -33,6 +39,7 @@ const ChatPage = ({ socket, newUsername, room }) => {
         <h2 id="room-name">
           {/* <p>{newRoom}</p> */}
           <ul>
+           {/* Mapping over roomList to display room names */}
           {roomList.map((roomName, index) => (
             <li key={index}>{roomName}</li>
           ))}
