@@ -8,6 +8,7 @@ export const Users = () => {
   const room = 'Lobby' 
 
   const socket = useSocket() //using socket from context!
+  
   const [newUsername, setNewUsername] = useState("");
 
   const start_chat_with_user = () => {
