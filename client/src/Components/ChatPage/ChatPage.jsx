@@ -1,15 +1,39 @@
 import React, { useEffect, useState } from "react";
 import "./ChatPage.css";
+import { useSocket } from "../../Context/ContextForSocket";
 
 const ChatPage = ({ socket, newUsername, room }) => {
   const [ newRoom, setNewroom ] = useState('Lobbyn')
   const [ roomList, setRoomlist ] = useState(['Lobbyn'])
+  const [ currentMessage, setCurrentMessage ] = useState('')
+  const [ messageList, setMessageList ] = useState([])
+
+  const sendMessage = async () => {
+    if (currentMessage !== '') {
+      const messageData = {
+        room: newRoom,
+        author: newUsername,
+        msg: currentMessage,
+           time:
+          new Date()
+      }
+
+      await socket.emit('send_message', messageData);
+    }
+  }
  
   useEffect(() => {
     socket.on('roomList', (rooms) => {
       setRoomlist(rooms)
     })
   }, [])
+
+  useEffect(() => {
+      socket.on('receive_message', (data) => {
+       setMessageList((list) => [...list, data])
+
+      })
+  }, [socket])
 
   const checkRoomInput = () => {
     console.log(newRoom)
@@ -20,6 +44,10 @@ const ChatPage = ({ socket, newUsername, room }) => {
       alert("Fältet får inte vara tomt.");
     }
   };
+
+  const leaveRoom = () => {
+    console.log('leave')
+  }
   
   return (
     <>
@@ -32,6 +60,7 @@ const ChatPage = ({ socket, newUsername, room }) => {
         <h3><i className="fas fa-comments"></i> Room Name:</h3>
         <h2 id="room-name">
           {/* <p>{newRoom}</p> */}
+          <button onClick={leaveRoom}>Leave room</button>
           <ul>
           {roomList.map((roomName, index) => (
             <li key={index}>{roomName}</li>
@@ -48,18 +77,24 @@ const ChatPage = ({ socket, newUsername, room }) => {
         <ul id="users">
         </ul>
       </div>
-      <div className="chat-messages"></div>
+      <div className="chat-messages">
+        {/* Här borde meddelande skrivas ut */}
+        {messageList.map((messageContent, idx) => (
+          <p key={idx}>{messageContent.msg}</p>
+        ))}
+      </div>
     </main>
     <div className="chat-form-container">
-      <form>
+      
         <input
           id="msg"
           type="text"
           placeholder="Enter Message"
+          onChange={(e) => setCurrentMessage(e.target.value)}
           required
         />
-        <button className="btn"><i className="fas fa-paper-plane"></i> Send</button>
-      </form>
+        <button onClick={sendMessage} className="btn">Send</button>
+      
     </div>
     </div>
     
