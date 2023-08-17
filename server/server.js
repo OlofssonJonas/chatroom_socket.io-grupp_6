@@ -21,9 +21,9 @@ const createdRoom = new Set()
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join();
-  createdRoom.add('Lobbyn', Array.from(createdRoom)) //add room to set
-  io.emit('roomList', Array.from(createdRoom)) // sending list of rooms to clients
-  //io.to("Lobby").to("room1").to("room2").emit("some event");
+  createdRoom.add('Lobbyn', Array.from(createdRoom))
+  io.emit('roomList', Array.from(createdRoom))
+  //io.to('Lobbbyn').to("room1").to("room2").emit("some event");
 
   console.log("new client connected", socket.id);
 
@@ -33,16 +33,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on('start_chat_with_room', room => {
-    socket.join(room)
     createdRoom.add(room)
+    socket.join(room)
     io.emit('roomList', Array.from(createdRoom))
     console.log(`${socket.id} has joined ${room}`)
   })
     
-  //   socket.on("start_chat_with_room", (username, room) => {
-  //     console.log('hej')
-  //     console.log(`User with name: ${username} has joined the ${room}`);
-  // });
+  socket.on('send_message', (data) => {
+    socket.to(data.newRoom).emit('receive_message', data)
+      console.log(data)
+  })
 
   // socket.on('disconnet', () => {
   //   console.log('A user has disconncted')
