@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ChatPage.css";
 
 const ChatPage = ({ socket, newUsername, room }) => {
   const [ newRoom, setNewroom ] = useState('Lobbyn')
-
+  const [ roomList, setRoomlist ] = useState(['Lobbyn'])
+ 
+  useEffect(() => {
+    socket.on('roomList', (rooms) => {
+      setRoomlist(rooms)
+    })
+  }, [])
 
   const checkRoomInput = () => {
     console.log(newRoom)
     if (newRoom.trim() != "") {
       //sending username and room to the server(terminal).
-      socket.emit("start_chat_with_room", newUsername, newRoom);
+      socket.emit("start_chat_with_room", newRoom);
     } else {
-      alert("Användarnamn får inte vara tomt.");
+      alert("Fältet får inte vara tomt.");
     }
   };
   
@@ -25,9 +31,15 @@ const ChatPage = ({ socket, newUsername, room }) => {
       <div className="chat-sidebar">
         <h3><i className="fas fa-comments"></i> Room Name:</h3>
         <h2 id="room-name">
+          {/* <p>{newRoom}</p> */}
+          <ul>
+          {roomList.map((roomName, index) => (
+            <li key={index}>{roomName}</li>
+          ))}
+          </ul>
         <input
             type="text"
-            placeholder={newRoom}
+            //placeholder={roomName}
             onChange={(e) => setNewroom(e.target.value)}
           />
           <button onClick={checkRoomInput}>Skapa rum</button>
