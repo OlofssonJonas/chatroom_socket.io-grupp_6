@@ -10,6 +10,9 @@ import Users from "../Users/Users";
 
 
 const ChatPage = ({ newUsername, room }) => {
+  const socket = useSocket(); //using socket from context!
+
+
   const [ newRoom, setNewroom ] = useState('Lobbyn')
   const [ roomList, setRoomlist ] = useState(['Lobbyn'])
   const [ currentMessage, setCurrentMessage ] = useState('')
