@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
+import Users from "../Users/Users";
 
 const ChatPage = ({ socket, newUsername, room }) => {
   const [ newRoom, setNewroom ] = useState('Lobbyn')
   const [ roomList, setRoomlist ] = useState(['Lobbyn'])
   const [ currentMessage, setCurrentMessage ] = useState('')
   const [ messageList, setMessageList ] = useState([])
+  const [ leaveChat, setLeaveChat ] = useState(false)
 
   const sendMessage = async () => {
     if (currentMessage !== '') {
@@ -46,12 +48,17 @@ const ChatPage = ({ socket, newUsername, room }) => {
   };
 
   const leaveRoom = () => {
-    console.log('leave')
+    console.log('Left chat')
+    socket.disconnect()
+    console.log('Socket disconnected:', socket.disconnected) //boolean proves cocket`s disconnect
+    setLeaveChat(true) //updating state
   }
   
   return (
     <>
-    <div className="chat-container">
+    {!leaveChat ? (
+
+      <div className="chat-container">
     <header className="chat-header">
       <h1><i className="fas fa-smile"></i> ChatPage</h1>
     </header>
@@ -64,13 +71,13 @@ const ChatPage = ({ socket, newUsername, room }) => {
           <ul>
           {roomList.map((roomName, index) => (
             <li key={index}>{roomName}</li>
-          ))}
+            ))}
           </ul>
         <input
             type="text"
-            //placeholder={roomName}
+            value={newRoom}
             onChange={(e) => setNewroom(e.target.value)}
-          />
+            />
           <button onClick={checkRoomInput}>Skapa rum</button>
           </h2>
         <h3><i className="fas fa-users"></i> Users</h3>
@@ -81,7 +88,7 @@ const ChatPage = ({ socket, newUsername, room }) => {
         {/* Här borde meddelande skrivas ut */}
         {messageList.map((messageContent, idx) => (
           <p key={idx}>{messageContent.msg}</p>
-        ))}
+          ))}
       </div>
     </main>
     <div className="chat-form-container">
@@ -92,14 +99,17 @@ const ChatPage = ({ socket, newUsername, room }) => {
           placeholder="Enter Message"
           onChange={(e) => setCurrentMessage(e.target.value)}
           required
-        />
+          />
         <button onClick={sendMessage} className="btn">Send</button>
       
     </div>
     </div>
+    ) : (
+      <Users />
+    )}
     
     </>
-  );
-};
-
-export default ChatPage;
+    );
+  };
+  
+  export default ChatPage;
