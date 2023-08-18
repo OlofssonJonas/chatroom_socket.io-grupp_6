@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
+
 import Users from "../Users/Users";
 
-const ChatPage = ({ socket, newUsername, room }) => {
+
+const ChatPage = ({ newUsername, room }) => {
   const [ newRoom, setNewroom ] = useState('Lobbyn')
   const [ roomList, setRoomlist ] = useState(['Lobbyn'])
   const [ currentMessage, setCurrentMessage ] = useState('')
@@ -23,12 +25,15 @@ const ChatPage = ({ socket, newUsername, room }) => {
       await socket.emit('send_message', messageData);
     }
   }
+
  
+  //listens for rooms-list updates from server
   useEffect(() => {
     socket.on('roomList', (rooms) => {
       setRoomlist(rooms)
     })
   }, [])
+
 
   useEffect(() => {
       socket.on('receive_message', (data) => {
@@ -37,13 +42,14 @@ const ChatPage = ({ socket, newUsername, room }) => {
       })
   }, [socket])
 
+
   const checkRoomInput = () => {
     console.log(newRoom)
     if (newRoom.trim() != "") {
       //sending username and room to the server(terminal).
       socket.emit("start_chat_with_room", newRoom);
     } else {
-      alert("Fältet får inte vara tomt.");
+      alert("Fältet får intae vara tomt.");
     }
   };
 
@@ -69,6 +75,7 @@ const ChatPage = ({ socket, newUsername, room }) => {
           {/* <p>{newRoom}</p> */}
           <button onClick={leaveRoom}>Leave room</button>
           <ul>
+           {/* Mapping over roomList to display room names */}
           {roomList.map((roomName, index) => (
             <li key={index}>{roomName}</li>
             ))}

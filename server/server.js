@@ -15,13 +15,17 @@ const io = new Server(server, {
 
 app.use(cors());
 
+// Set to keep track of created rooms
 const createdRoom = new Set()
 
+//Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join();
-  createdRoom.add('Lobbyn', Array.from(createdRoom))
-  io.emit('roomList', Array.from(createdRoom))
-  //io.to('Lobbbyn').to("room1").to("room2").emit("some event");
+
+  createdRoom.add('Lobbyn', Array.from(createdRoom)) //add room to set
+  io.emit('roomList', Array.from(createdRoom)) // sending list of rooms to clients
+  //io.to("Lobby").to("room1").to("room2").emit("some event");
+
 
   console.log("new client connected", socket.id);
 
