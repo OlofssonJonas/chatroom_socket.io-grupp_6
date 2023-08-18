@@ -20,7 +20,7 @@ const createdRoom = new Set()
 
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
-  socket.join();
+  socket.join('Lobbyn');
 
   createdRoom.add('Lobbyn', Array.from(createdRoom)) //add room to set
   io.emit('roomList', Array.from(createdRoom)) // sending list of rooms to clients
@@ -42,7 +42,8 @@ io.on("connection", (socket) => {
   })
     
   socket.on('send_message', (data) => {
-    socket.to(data.newRoom).emit('receive_message', data)
+    console.log(io.sockets.adapter.rooms)
+    io.to(data.room).emit('receive_message', data)
       console.log(data)
   })
 
