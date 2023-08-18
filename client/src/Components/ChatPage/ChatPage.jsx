@@ -29,13 +29,9 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
 
-<<<<<<< HEAD
-      await socket.emit("send_message", messageData);
-=======
       await socket.emit('send_message', messageData);
       console.log(messageData)
       //setMessageList((list) => [...list, messageData])
->>>>>>> 0e69376edd398c624c071e677c29f4fdfc9eb58c
     }
   }
 
