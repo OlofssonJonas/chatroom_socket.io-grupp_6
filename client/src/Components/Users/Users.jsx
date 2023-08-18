@@ -10,13 +10,16 @@ export const Users = () => {
   const socket = useSocket() //using socket from context!
   
   const [newUsername, setNewUsername] = useState("");
-
+  const [ currentRoom, setCurrentRoom ] = useState('Lobby')
+  
   const start_chat_with_user = () => {
     socket.connect();
     console.log("Starting chat with user:", newUsername);
+    setCurrentRoom('Lobby')
     checkUserInput();
+    console.log(currentRoom)
   };
-
+  
   const checkUserInput = () => {
     if (newUsername.trim() != "") {
       setShowLobby(true);
@@ -50,7 +53,7 @@ export const Users = () => {
 		</div>
         ) : (
           
-          <ChatPage newUsername={newUsername} room={room} />
+          <ChatPage newUsername={newUsername} room={room} currentRoom={currentRoom} />
           )}
           </>
   );

@@ -15,9 +15,12 @@ const ChatPage = ({ newUsername, room }) => {
 
   const [ newRoom, setNewroom ] = useState('Lobbyn')
   const [ roomList, setRoomlist ] = useState(['Lobbyn'])
+  const [ currentRoom, setCurrentRoom ] = useState('Lobbyn')
   const [ currentMessage, setCurrentMessage ] = useState('')
   const [ messageList, setMessageList ] = useState([])
   const [ leaveChat, setLeaveChat ] = useState(false)
+  console.log(roomList)
+  console.log(currentRoom)
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -28,7 +31,13 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
 
+<<<<<<< HEAD
       await socket.emit("send_message", messageData);
+=======
+      await socket.emit('send_message', messageData);
+      console.log(messageData)
+      //setMessageList((list) => [...list, messageData])
+>>>>>>> 0e69376edd398c624c071e677c29f4fdfc9eb58c
     }
   }
 
@@ -49,13 +58,16 @@ const ChatPage = ({ newUsername, room }) => {
   }, [socket])
 
 
+
   const checkRoomInput = () => {
     console.log(newRoom);
     if (newRoom.trim() != "") {
       //sending username and room to the server(terminal).
       socket.emit("start_chat_with_room", newRoom);
+      console.log(newRoom)
+      setCurrentRoom(newRoom)
     } else {
-      alert("Fältet får intae vara tomt.");
+      alert("Fältet får inte vara tomt.");
     }
   };
 
@@ -69,7 +81,6 @@ const ChatPage = ({ newUsername, room }) => {
   return (
     <>
     {!leaveChat ? (
-
       <div className="chat-container">
     <header className="chat-header">
       <h1><i className="fas fa-smile"></i> ChatPage</h1>
@@ -78,29 +89,33 @@ const ChatPage = ({ newUsername, room }) => {
       <div className="chat-sidebar">
         <h3><i className="fas fa-comments"></i> Room Name:</h3>
         <h2 id="room-name">
-          {/* <p>{newRoom}</p> */}
-          <button onClick={leaveRoom}>Leave room</button>
-          <ul>
-           {/* Mapping over roomList to display room names */}
-          {roomList.map((roomName, index) => (
-            <li key={index}>{roomName}</li>
+          <p>{currentRoom}</p> 
+          <label>Select</label>
+          <select>
+            {roomList.map((roomName, idx) => (
+              <option value={roomName} key={idx}>{roomName}
+              </option>
             ))}
-          </ul>
+          </select>
+          <button>Gå in i rummet</button> <br />
+          <button onClick={leaveRoom}>Leave room</button>
         <input
             type="text"
             value={newRoom}
             onChange={(e) => setNewroom(e.target.value)}
             />
+          
           <button onClick={checkRoomInput}>Skapa rum</button>
           </h2>
-        <h3><i className="fas fa-users"></i> Users</h3>
+        <h3><i className="fas fa-users"></i> User:</h3>
         <ul id="users">
+          <li>{newUsername}</li>
         </ul>
       </div>
       <div className="chat-messages">
         {/* Här borde meddelande skrivas ut */}
         {messageList.map((messageContent, idx) => (
-          <p key={idx}>{messageContent.msg}</p>
+          <p key={idx}>klockan {messageContent.time} skrev {messageContent.author}: {messageContent.msg}</p>
           ))}
       </div>
     </main>
