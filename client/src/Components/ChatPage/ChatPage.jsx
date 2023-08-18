@@ -6,8 +6,6 @@ import Users from "../Users/Users";
 
 
 
-import Users from "../Users/Users";
-
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
