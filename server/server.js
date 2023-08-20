@@ -31,12 +31,17 @@ io.on("connection", (socket) => {
   socket.on("start_chat_with_user", (username, room) => {
     console.log(`User with name: ${username} has joined the ${room}`);
     socket.broadcast.to("start_chat_with_user", username);
+    //Counting clients in room
+    const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
+    const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
+    io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
   });
 
-  //Counting clients in room
-  const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
-  const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
-  io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
+  socket.on("disconnect", () => {
+    const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
+    const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
+    io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
+  });
 
   socket.on("start_chat_with_room", (room) => {
     createdRoom.add(room);
