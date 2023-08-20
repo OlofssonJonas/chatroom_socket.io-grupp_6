@@ -17,6 +17,7 @@ const ChatPage = ({ newUsername, room }) => {
   const [ currentMessage, setCurrentMessage ] = useState('')
   const [ messageList, setMessageList ] = useState([])
   const [ leaveChat, setLeaveChat ] = useState(false)
+  const [clientCount, setClientCount] = useState(0);
   console.log(roomList)
   console.log(currentRoom)
 
@@ -36,23 +37,6 @@ const ChatPage = ({ newUsername, room }) => {
   }
 
  
-  //listens for rooms-list updates from server
-  useEffect(() => {
-    socket.on("roomList", (rooms) => {
-      setRoomlist(rooms);
-    });
-  }, []);
-
-
-  useEffect(() => {
-      socket.on('receive_message', (data) => {
-       setMessageList((list) => [...list, data])
-
-      })
-  }, [socket])
-
-
-
   const checkRoomInput = () => {
     console.log(newRoom);
     if (newRoom.trim() != "") {
@@ -71,6 +55,31 @@ const ChatPage = ({ newUsername, room }) => {
     console.log('Socket disconnected:', socket.disconnected) //boolean proves cocket`s disconnect
     setLeaveChat(true) //updating state
   }
+
+  //listens for rooms-list updates from server
+  useEffect(() => {
+    socket.on('receive_message', (data) => {
+      setMessageList((list) => [...list, data]);
+    });
+
+    socket.on('clientsInRoom', (qtyOfClients) => {
+      setClientCount(qtyOfClients);
+      console.log(`client count: ${qtyOfClients}`);
+    });
+
+    // return () => {
+    //   socket.off('receive_message');
+    //   //socket.off('clientsInRoom');
+    // };
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("roomList", (rooms) => {
+      setRoomlist(rooms);
+    });
+  }, [socket]);
+
+
   
   return (
     <>
@@ -105,6 +114,7 @@ const ChatPage = ({ newUsername, room }) => {
         <ul id="users">
           <li>{newUsername}</li>
         </ul>
+        <p>Number of clients in room: {clientCount}</p>
       </div>
       <div className="chat-messages">
         {/* Här borde meddelande skrivas ut */}

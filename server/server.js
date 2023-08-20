@@ -16,16 +16,15 @@ const io = new Server(server, {
 app.use(cors());
 
 // Set to keep track of created rooms
-const createdRoom = new Set()
+const createdRoom = new Set();
 
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
-  socket.join('Lobbyn');
+  socket.join("Lobbyn");
 
-  createdRoom.add('Lobbyn', Array.from(createdRoom)) //add room to set
-  io.emit('roomList', Array.from(createdRoom)) // sending list of rooms to clients
+  createdRoom.add("Lobbyn", Array.from(createdRoom)); //add room to set
+  io.emit("roomList", Array.from(createdRoom)); // sending list of rooms to clients
   //io.to("Lobby").to("room1").to("room2").emit("some event");
-
 
   console.log("new client connected", socket.id);
 
@@ -34,21 +33,26 @@ io.on("connection", (socket) => {
     socket.broadcast.to("start_chat_with_user", username);
   });
 
-  socket.on('start_chat_with_room', room => {
-    createdRoom.add(room)
-    socket.join(room)
-    io.emit('roomList', Array.from(createdRoom))
-    console.log(`${socket.id} has joined ${room}`)
-  })
-    
-  socket.on('send_message', (data) => {
-    console.log(io.sockets.adapter.rooms)
-    io.to(data.room).emit('receive_message', data)
-      console.log(data)
-  })
+  //Counting clients in room
+  const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
+  const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
+  io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
+
+  socket.on("start_chat_with_room", (room) => {
+    createdRoom.add(room);
+    socket.join(room);
+    io.emit("roomList", Array.from(createdRoom));
+    console.log(`${socket.id} has joined ${room}`);
+  });
+
+  socket.on("send_message", (data) => {
+    console.log(io.sockets.adapter.rooms);
+    io.to(data.room).emit("receive_message", data);
+    console.log(data);
+  });
 
   // socket.on('disconnet', () => {
   //   console.log('A user has disconncted')
   // })
-})
-  server.listen(3000, () => console.log("Server is up and running"));
+});
+server.listen(3000, () => console.log("Server is up and running"));
