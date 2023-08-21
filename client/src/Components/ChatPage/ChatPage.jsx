@@ -96,11 +96,11 @@ const ChatPage = ({ newUsername, room }) => {
           <main className="chat-main">
             <div className="chat-sidebar">
               <h3>
-                <i className="fas fa-comments"></i> Room Name:
+                <i className="fas fa-comments"></i> Rumsnamn:
               </h3>
               <h2 id="room-name">
                 <p>{currentRoom}</p>
-                <label>Select</label>
+                <label>Välj rum</label>
                 <select
                   value={selectedRoom}
                   onChange={(e) => setSelectedRoom(e.target.value)}
@@ -111,12 +111,10 @@ const ChatPage = ({ newUsername, room }) => {
                     </option>
                   ))}
                 </select>
-                {/* //Ammar */}
                 <button onClick={joinSelectedRoom}>Gå in i rummet</button>{" "}
-                {/* Ammar Slut */}
                 {/* ifall ammars ej funkar */}
                 {/* <button>Gå in i rummet</button> <br /> */}
-                <button onClick={leaveRoom}>Leave room</button>
+                <button onClick={leaveRoom}>Lämna chatten</button>
                 <input
                   type="text"
                   value={newRoom}
@@ -125,12 +123,12 @@ const ChatPage = ({ newUsername, room }) => {
                 <button onClick={checkRoomInput}>Skapa rum</button>
               </h2>
               <h3>
-                <i className="fas fa-users"></i> User:
+                <i className="fas fa-users"></i> Användare:
               </h3>
               <ul id="users">
                 <li>{newUsername}</li>
               </ul>
-              <p>Number of clients in room: {clientCount}</p>
+              <p>Användare i rummet: {clientCount}</p>
             </div>
             <div className="chat-messages">
               {/* Här borde meddelande skrivas ut */}
@@ -146,12 +144,12 @@ const ChatPage = ({ newUsername, room }) => {
             <input
               id="msg"
               type="text"
-              placeholder="Enter Message"
+              placeholder="Ange meddelande"
               onChange={(e) => setCurrentMessage(e.target.value)}
               required
             />
             <button onClick={sendMessage} className="btn">
-              Send
+              Skicka
             </button>
           </div>
         </div>
