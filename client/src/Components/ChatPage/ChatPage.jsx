@@ -58,6 +58,7 @@ const ChatPage = ({ newUsername, room }) => {
       socket.emit("start_chat_with_room", newRoom);
       console.log(newRoom);
       setCurrentRoom(newRoom);
+      leaveRoom();
     } else {
       alert("Fältet får inte vara tomt.");
     }
@@ -69,6 +70,7 @@ const ChatPage = ({ newUsername, room }) => {
     console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
     setLeaveChat(true); //updating state
     leaveRoom();
+    setMessageList([]);
   };
 
   const leaveRoom = () => {
@@ -80,6 +82,7 @@ const ChatPage = ({ newUsername, room }) => {
       socket.emit("start_chat_with_room", selectedRoom);
       // setCurrentRoom(currentRoom);
       setCurrentRoom(selectedRoom);
+      leaveRoom();
     } else {
       alert("Du har inte valt ett rum!");
     }
