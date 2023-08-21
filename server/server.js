@@ -17,11 +17,11 @@ app.use(cors());
 
 // Set to keep track of created rooms
 const createdRoom = new Set();
+const rooms = {};
 
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join("Lobbyn");
-
   createdRoom.add("Lobbyn", Array.from(createdRoom)); //add room to set
   io.emit("roomList", Array.from(createdRoom)); // sending list of rooms to clients
   //io.to("Lobby").to("room1").to("room2").emit("some event");
@@ -43,11 +43,32 @@ io.on("connection", (socket) => {
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
   });
 
+  socket.on("leaveRoom", (roomName) => {
+    socket.leave(roomName);
+    console.log(`${socket.id} has left the room ${roomName}`);
+    if (rooms[roomName]) {
+      rooms[roomName] = rooms[roomName].filter((id) => id !== socket.id);
+      if (rooms[roomName].length === 0) {
+        delete rooms[roomName];
+      }
+      console.log(io.sockets.adapter.rooms);
+    }
+  });
+
   socket.on("start_chat_with_room", (room) => {
     createdRoom.add(room);
-    socket.join(room);
     io.emit("roomList", Array.from(createdRoom));
-    console.log(`${socket.id} has joined ${room}`);
+
+    console.log(io.sockets.adapter.rooms);
+    socket.join(room);
+    if (!rooms[room]) {
+      rooms[room] = [socket.id];
+    } else {
+      rooms[room].push(socket.id);
+    }
+    console.log(io.sockets.adapter.rooms);
+
+    // console.log(`${socket.id} has joined ${room}`);
   });
 
   socket.on("send_message", (data) => {
