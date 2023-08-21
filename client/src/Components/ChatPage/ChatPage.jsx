@@ -14,18 +14,20 @@ const ChatPage = ({ newUsername, room }) => {
   const [leaveChat, setLeaveChat] = useState(false);
   const [clientCount, setClientCount] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState("Lobbyn");
-  const [ typingUsers, setTypingUsers] = useState([])
+  const [typingUsers, setTypingUsers] = useState([]);
 
   useEffect(() => {
-    socket.on('typing', (data) => {
-      if(!typingUsers.includes(data.userId)) {
-        setTypingUsers((prevUsers) => [...prevUsers, data.userId])
+    socket.on("typing", (data) => {
+      if (!typingUsers.includes(data.userId)) {
+        setTypingUsers((prevUsers) => [...prevUsers, data.userId]);
         setTimeout(() => {
-          setTypingUsers((prevUsers) => prevUsers.filter(user => user !== data.userId))
-        }, 3000)
+          setTypingUsers((prevUsers) =>
+            prevUsers.filter((user) => user !== data.userId)
+          );
+        }, 3000);
       }
-    })
-  })
+    });
+  });
 
   console.log(roomList);
   console.log(currentRoom);
@@ -46,10 +48,8 @@ const ChatPage = ({ newUsername, room }) => {
   };
 
   const handdleTyping = () => {
-    socket.emit('typing', {userId: 'senderUserId'})
-  }
-  
-  
+    socket.emit("typing", { userId: "senderUserId" });
+  };
 
   const checkRoomInput = () => {
     console.log(newRoom);
@@ -63,18 +63,23 @@ const ChatPage = ({ newUsername, room }) => {
     }
   };
 
+  const LeaveChat = () => {
+    console.log("Left chat");
+    socket.disconnect();
+    console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
+    setLeaveChat(true); //updating state
+    leaveRoom();
+  };
+
   const leaveRoom = () => {
-    // console.log("Left chat");
-    // socket.disconnect();
-    // console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
-    // setLeaveChat(true); //updating state
-    socket.emit('leaveRoom', currentRoom)
+    socket.emit("leaveRoom", currentRoom);
   };
 
   const joinSelectedRoom = () => {
     if (selectedRoom.trim() != "") {
       socket.emit("start_chat_with_room", selectedRoom);
-      setCurrentRoom(currentRoom);
+      // setCurrentRoom(currentRoom);
+      setCurrentRoom(selectedRoom);
     } else {
       alert("Du har inte valt ett rum!");
     }
@@ -113,8 +118,7 @@ const ChatPage = ({ newUsername, room }) => {
             </h1>
           </header>
           <button onClick={leaveRoom}>left room,</button>
-          <input placeholder="is typing..."
-          onKeyUp={handdleTyping}></input>
+          <input placeholder="is typing..." onKeyUp={handdleTyping}></input>
           <main className="chat-main">
             <div className="chat-sidebar">
               <h3>
@@ -134,9 +138,7 @@ const ChatPage = ({ newUsername, room }) => {
                   ))}
                 </select>
                 <button onClick={joinSelectedRoom}>Gå in i rummet</button>{" "}
-                {/* ifall ammars ej funkar */}
-                {/* <button>Gå in i rummet</button> <br /> */}
-                <button onClick={leaveRoom}>Lämna chatten</button>
+                <button onClick={LeaveChat}>Lämna chatten</button>
                 <input
                   type="text"
                   value={newRoom}
