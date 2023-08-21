@@ -15,22 +15,10 @@ const ChatPage = ({ newUsername, room }) => {
   const [clientCount, setClientCount] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState("Lobbyn");
   const [typingUsers, setTypingUsers] = useState([]);
+  const [isTyping, setIstyping] = useState(false);
 
-  useEffect(() => {
-    socket.on("typing", (data) => {
-      if (!typingUsers.includes(data.userId)) {
-        setTypingUsers((prevUsers) => [...prevUsers, data.userId]);
-        setTimeout(() => {
-          setTypingUsers((prevUsers) =>
-            prevUsers.filter((user) => user !== data.userId)
-          );
-        }, 3000);
-      }
-    });
-  });
-
-  console.log(roomList);
-  console.log(currentRoom);
+  // console.log(roomList);
+  // console.log(currentRoom);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -45,10 +33,6 @@ const ChatPage = ({ newUsername, room }) => {
       console.log(messageData);
       //setMessageList((list) => [...list, messageData])
     }
-  };
-
-  const handdleTyping = () => {
-    socket.emit("typing", { userId: "senderUserId" });
   };
 
   const checkRoomInput = () => {
@@ -110,6 +94,35 @@ const ChatPage = ({ newUsername, room }) => {
       setRoomlist(rooms);
     });
   }, [socket]);
+  const handleInputChange = (event) => {
+    if (event.target.value !== "") {
+      socket.emit("typing", { room: currentRoom, userId: newUsername });
+    } else {
+      socket.emit("stopTyping", { room: currentRoom, userId: newUsername });
+    }
+  };
+  useEffect(() => {
+    let typingTimeout;
+    socket.on("userTyping", (data) => {
+      if (!typingUsers.includes(data.userId)) {
+        setTypingUsers((prevUsers) => [...prevUsers, data.userId]);
+        console.log("User typing:", data.userId);
+        setIstyping(true);
+      }
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        setIstyping(false);
+      }, 2000);
+    });
+
+    socket.on("userStoppedTyping", (data) => {
+      setTypingUsers((prevUsers) =>
+        prevUsers.filter((user) => user !== data.userId)
+      );
+      console.log("User stopped typing:", data.userId);
+      setIstyping(false);
+    });
+  }, [socket, isTyping, clearTimeout]);
 
   return (
     <>
@@ -121,7 +134,6 @@ const ChatPage = ({ newUsername, room }) => {
             </h1>
           </header>
           <button onClick={leaveRoom}>left room,</button>
-          <input placeholder="is typing..." onKeyUp={handdleTyping}></input>
           <main className="chat-main">
             <div className="chat-sidebar">
               <h3>
@@ -172,12 +184,16 @@ const ChatPage = ({ newUsername, room }) => {
               id="msg"
               type="text"
               placeholder="Ange meddelande"
-              onChange={(e) => setCurrentMessage(e.target.value)}
+              onChange={(e) => {
+                setCurrentMessage(e.target.value);
+                handleInputChange(e);
+              }}
               required
             />
             <button onClick={sendMessage} className="btn">
               Skicka
             </button>
+            {isTyping && <p>Someone is typing...</p>}
           </div>
         </div>
       ) : (

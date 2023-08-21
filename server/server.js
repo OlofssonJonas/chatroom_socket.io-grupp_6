@@ -80,5 +80,29 @@ io.on("connection", (socket) => {
   // socket.on('disconnet', () => {
   //   console.log('A user has disconncted')
   // })
+
+  // Ammar
+
+  socket.on("typing", () => {
+    socket.broadcast.emit("userTyping", { userId: socket.id });
+    console.log("is typing");
+  });
+  socket.on("stopTyping", () => {
+    socket.broadcast.emit("userStoppedTyping", { userId: socket.id });
+    console.log("not typing");
+  });
+  // socket.on("typing", () => {
+  //   socket
+  //     .to(roomName)
+  //     .emit("userTyping", { userId: socket.id, room: currentRoom });
+  //   console.log("is typing");
+  // });
+
+  // socket.on("stopTyping", () => {
+  //   socket
+  //     .to(roomName)
+  //     .emit("userStoppedTyping", { userId: socket.id, room: roomName });
+  //   console.log("not typing");
+  // });
 });
 server.listen(3000, () => console.log("Server is up and running"));
