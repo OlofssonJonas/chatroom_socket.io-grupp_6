@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
   });
 
-  socket.on("leaveRoom", (roomName) => {
+  socket.on("changeRoom", (roomName) => {
     socket.leave(roomName);
     console.log(`${socket.id} has left the room ${roomName}`);
     if (rooms[roomName]) {
