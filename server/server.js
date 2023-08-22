@@ -75,12 +75,14 @@ io.on("connection", (socket) => {
   });
 
 
-  socket.on("typing", () => {
-    socket.broadcast.emit("userTyping", { userId: socket.id });
+  socket.on("typing", (data) => {
+    //Här ändrade jag så att an skrev till ett specifikt rum istället för till alla utom sig själv 
+    console.log(data.room)
+    socket.to(data.room).emit("userTyping", { userId: socket.id });
     // console.log("is typing");
   });
-  socket.on("stopTyping", () => {
-    socket.broadcast.emit("userStoppedTyping", { userId: socket.id });
+  socket.on("stopTyping", (room) => {
+    socket.to(room).emit("userStoppedTyping", { userId: socket.id });
     console.log("not typing");
   });
   // socket.on("typing", () => {
