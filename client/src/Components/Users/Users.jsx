@@ -36,10 +36,10 @@ export const Users = () => {
       {!showLobby ? (
         <div className="join-container">
           <header className="join-header">
-            <h1>
-              <i className="fas fa-smile">
-                Hej och välkommen! välj ett användarnamn
-              </i>
+            <h1 class="titleStartPage">
+              
+                START CHAT
+              
             </h1>
           </header>
           <main className="join-main">
@@ -48,11 +48,11 @@ export const Users = () => {
                 <input
                   type="text"
                   onChange={(e) => setNewUsername(e.target.value)}
-                  placeholder="Skriv in ditt användarnamn..."
+                  placeholder="a cool alias here..."
                 />
               </div>
               <button className="btn" onClick={start_chat_with_user}>
-                Börja chatta
+                Let the chat begin
               </button>
             </form>
           </main>

@@ -130,46 +130,55 @@ const ChatPage = ({ newUsername, room }) => {
         <div className="chat-container">
           <header className="chat-header">
             <h1>
-              <i className="fas fa-smile"></i> ChatPage
+              <i className="fas fa-smile"></i> Chat
             </h1>
+            <button class="leaveBtn" onClick={LeaveChat}>
+              Leave, bye!
+            </button>
           </header>
           <button onClick={leaveRoom}>left room,</button>
           <main className="chat-main">
             <div className="chat-sidebar">
-              <h3>
-                <i className="fas fa-comments"></i> Rumsnamn:
-              </h3>
+              <h5>
+                in chat as: {newUsername}
+                {/* <ul id="users">
+                <li>{newUsername}</li>
+              </ul> */}
+              </h5>
+              <hr></hr>
+              <h5>
+                <i className="fas fa-comments"></i> in room: {currentRoom}
+              </h5>
+              <hr></hr>
+              <br></br>
+              {/* <h5>change room</h5> */}
+              <select
+                value={selectedRoom}
+                onChange={(e) => setSelectedRoom(e.target.value)}
+              >
+                {roomList.map((roomName, idx) => (
+                  <option value={roomName} key={idx}>
+                    {roomName}
+                  </option>
+                ))}
+              </select>
+              <br></br>
+              <button onClick={joinSelectedRoom}>Switch room</button>{" "}
               <h2 id="room-name">
-                <p>{currentRoom}</p>
-                <label>Välj rum</label>
-                <select
-                  value={selectedRoom}
-                  onChange={(e) => setSelectedRoom(e.target.value)}
-                >
-                  {roomList.map((roomName, idx) => (
-                    <option value={roomName} key={idx}>
-                      {roomName}
-                    </option>
-                  ))}
-                </select>
-                <button onClick={joinSelectedRoom}>Gå in i rummet</button>{" "}
-                <button onClick={LeaveChat}>Lämna chatten</button>
+                {/* <p>{currentRoom}</p> */}
+               
+                <br></br>
                 <input
                   type="text"
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-                <button onClick={checkRoomInput}>Skapa rum</button>
+                <button onClick={checkRoomInput}>create new room</button>
               </h2>
-              <h3>
-                <i className="fas fa-users"></i> Användare:
-              </h3>
-              <ul id="users">
-                <li>{newUsername}</li>
-              </ul>
-              <p>Användare i rummet: {clientCount}</p>
+              {/* <p>Användare i rummet: {clientCount}</p> */}
             </div>
             <div className="chat-messages">
+              <p class="usersInRoom">Active users {clientCount}</p>
               {/* Här borde meddelande skrivas ut */}
               {messageList.map((messageContent, idx) => (
                 <p key={idx}>
@@ -179,11 +188,12 @@ const ChatPage = ({ newUsername, room }) => {
               ))}
             </div>
           </main>
+
           <div className="chat-form-container">
             <input
               id="msg"
               type="text"
-              placeholder="Ange meddelande"
+             placeholder="message.."
               onChange={(e) => {
                 setCurrentMessage(e.target.value);
                 handleInputChange(e);
@@ -191,7 +201,7 @@ const ChatPage = ({ newUsername, room }) => {
               required
             />
             <button onClick={sendMessage} className="btn">
-              Skicka
+              Send
             </button>
             {isTyping && <p>Someone is typing...</p>}
           </div>
