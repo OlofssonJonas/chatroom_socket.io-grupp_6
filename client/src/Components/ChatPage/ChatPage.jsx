@@ -35,12 +35,13 @@ const ChatPage = ({ newUsername, room }) => {
 
   const checkRoomInput = () => {
     console.log(newRoom);
+    // console.log(roomList);
     if (newRoom.trim() != "") {
       //sending username and room to the server(terminal).
       socket.emit("start_chat_with_room", newRoom);
       console.log(newRoom);
       setCurrentRoom(newRoom);
-      leaveRoom();
+      changeRoom();
       setMessageList([]);
     } else {
       alert("Fältet får inte vara tomt.");
@@ -52,12 +53,13 @@ const ChatPage = ({ newUsername, room }) => {
     socket.disconnect();
     console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
     setLeaveChat(true); //updating state
-    leaveRoom();
+    changeRoom();
+    // setRoomlist(room);
     setMessageList([]);
   };
 
-  const leaveRoom = () => {
-    socket.emit("leaveRoom", currentRoom);
+  const changeRoom = () => {
+    socket.emit("changeRoom", currentRoom);
     setMessageList([]);
   };
 
@@ -65,9 +67,15 @@ const ChatPage = ({ newUsername, room }) => {
     if (selectedRoom.trim() != "") {
       socket.emit("start_chat_with_room", selectedRoom);
       setCurrentRoom(selectedRoom);
-      leaveRoom();
+      changeRoom();
     }
   };
+
+  useEffect(() => {
+    socket.on("roomList", (rooms) => {
+      setRoomlist(rooms);
+    });
+  }, [socket]);
 
   //listens for rooms-list updates from server
   useEffect(() => {
@@ -86,12 +94,6 @@ const ChatPage = ({ newUsername, room }) => {
     //   socket.off('receive_message');
     //   //socket.off('clientsInRoom');
     // };
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on("roomList", (rooms) => {
-      setRoomlist(rooms);
-    });
   }, [socket]);
 
   const handleInputChange = (event) => {
