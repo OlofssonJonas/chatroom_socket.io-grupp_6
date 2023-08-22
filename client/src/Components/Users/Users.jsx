@@ -17,7 +17,7 @@ export const Users = () => {
     console.log("Starting chat with user:", newUsername);
     setCurrentRoom("Lobby");
     checkUserInput();
-    console.log(currentRoom);
+    // console.log(currentRoom);
   };
 
   const checkUserInput = () => {
@@ -36,11 +36,7 @@ export const Users = () => {
       {!showLobby ? (
         <div className="join-container">
           <header className="join-header">
-            <h1 class="titleStartPage">
-              
-                START CHAT
-              
-            </h1>
+            <h1 class="titleStartPage">START CHAT</h1>
           </header>
           <main className="join-main">
             <form>
@@ -48,11 +44,11 @@ export const Users = () => {
                 <input
                   type="text"
                   onChange={(e) => setNewUsername(e.target.value)}
-                  placeholder="a cool alias here..."
+                  placeholder="A cool alias here..."
                 />
               </div>
               <button className="btn" onClick={start_chat_with_user}>
-                Let the chat begin
+                Let the chat begin!
               </button>
             </form>
           </main>

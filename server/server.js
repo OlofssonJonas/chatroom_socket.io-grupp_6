@@ -18,14 +18,13 @@ app.use(cors());
 // Set to keep track of created rooms
 const createdRoom = new Set();
 const rooms = {};
+console.log(io.sockets.adapter.rooms);
 
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join("Lobbyn");
   createdRoom.add("Lobbyn", Array.from(createdRoom)); //add room to set
   io.emit("roomList", Array.from(createdRoom)); // sending list of rooms to clients
-  //io.to("Lobby").to("room1").to("room2").emit("some event");
-
   console.log("new client connected", socket.id);
 
   socket.on("start_chat_with_user", (username, room) => {
@@ -35,6 +34,7 @@ io.on("connection", (socket) => {
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
+    console.log(io.sockets.adapter.rooms);
   });
 
   socket.on("disconnect", () => {
@@ -48,34 +48,30 @@ io.on("connection", (socket) => {
     console.log(`${socket.id} has left the room ${roomName}`);
     if (rooms[roomName]) {
       rooms[roomName] = rooms[roomName].filter((id) => id !== socket.id);
-      if (rooms[roomName].length === 0) {
+      if (rooms[roomName].length === 0 && rooms[roomName] !== "Lobby") {
         delete rooms[roomName];
       }
-      console.log(io.sockets.adapter.rooms);
     }
+    console.log(io.sockets.adapter.rooms);
   });
 
   socket.on("start_chat_with_room", (room) => {
     createdRoom.add(room);
     io.emit("roomList", Array.from(createdRoom));
-
-    console.log(io.sockets.adapter.rooms);
     socket.join(room);
     if (!rooms[room]) {
       rooms[room] = [socket.id];
     } else {
       rooms[room].push(socket.id);
     }
-    console.log(io.sockets.adapter.rooms);
-
-    // console.log(`${socket.id} has joined ${room}`);
   });
 
   socket.on("send_message", (data) => {
-    console.log(io.sockets.adapter.rooms);
     io.to(data.room).emit("receive_message", data);
     console.log(data);
   });
+
+  //den ska vara kvar Nikela
 
   // socket.on('disconnet', () => {
   //   console.log('A user has disconncted')
@@ -85,7 +81,7 @@ io.on("connection", (socket) => {
 
   socket.on("typing", () => {
     socket.broadcast.emit("userTyping", { userId: socket.id });
-    console.log("is typing");
+    // console.log("is typing");
   });
   socket.on("stopTyping", () => {
     socket.broadcast.emit("userStoppedTyping", { userId: socket.id });

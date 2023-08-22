@@ -28,10 +28,8 @@ const ChatPage = ({ newUsername, room }) => {
         msg: currentMessage,
         time: new Date(),
       };
-
       await socket.emit("send_message", messageData);
       console.log(messageData);
-      //setMessageList((list) => [...list, messageData])
     }
   };
 
@@ -43,6 +41,7 @@ const ChatPage = ({ newUsername, room }) => {
       console.log(newRoom);
       setCurrentRoom(newRoom);
       leaveRoom();
+      setMessageList([]);
     } else {
       alert("Fältet får inte vara tomt.");
     }
@@ -59,16 +58,14 @@ const ChatPage = ({ newUsername, room }) => {
 
   const leaveRoom = () => {
     socket.emit("leaveRoom", currentRoom);
+    setMessageList([]);
   };
 
   const joinSelectedRoom = () => {
     if (selectedRoom.trim() != "") {
       socket.emit("start_chat_with_room", selectedRoom);
-      // setCurrentRoom(currentRoom);
       setCurrentRoom(selectedRoom);
       leaveRoom();
-    } else {
-      alert("Du har inte valt ett rum!");
     }
   };
 
@@ -80,8 +77,10 @@ const ChatPage = ({ newUsername, room }) => {
 
     socket.on("clientsInRoom", (qtyOfClients) => {
       setClientCount(qtyOfClients);
-      console.log(`client count: ${qtyOfClients}`);
+      // console.log(`client count: ${qtyOfClients}`);
     });
+
+    // Nikela?
 
     // return () => {
     //   socket.off('receive_message');
@@ -94,13 +93,15 @@ const ChatPage = ({ newUsername, room }) => {
       setRoomlist(rooms);
     });
   }, [socket]);
+
   const handleInputChange = (event) => {
     if (event.target.value !== "") {
-      socket.emit("typing", { room: currentRoom, userId: newUsername });
+      socket.emit("typing", { room: currentRoom, userId: newUsername }); //room för att skicka rätt rum
     } else {
       socket.emit("stopTyping", { room: currentRoom, userId: newUsername });
     }
   };
+
   useEffect(() => {
     let typingTimeout;
     socket.on("userTyping", (data) => {
@@ -112,7 +113,7 @@ const ChatPage = ({ newUsername, room }) => {
       clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => {
         setIstyping(false);
-      }, 2000);
+      }, 10000);
     });
 
     socket.on("userStoppedTyping", (data) => {
@@ -133,25 +134,18 @@ const ChatPage = ({ newUsername, room }) => {
               <i className="fas fa-smile"></i> Chat
             </h1>
             <button class="leaveBtn" onClick={LeaveChat}>
-              Leave, bye!
+              Leave chat, bye!
             </button>
           </header>
-          <button onClick={leaveRoom}>left room,</button>
           <main className="chat-main">
             <div className="chat-sidebar">
-              <h5>
-                in chat as: {newUsername}
-                {/* <ul id="users">
-                <li>{newUsername}</li>
-              </ul> */}
-              </h5>
+              <h5>In chat as: {newUsername}</h5>
               <hr></hr>
               <h5>
-                <i className="fas fa-comments"></i> in room: {currentRoom}
+                <i className="fas fa-comments"></i> In room: {currentRoom}
               </h5>
               <hr></hr>
               <br></br>
-              {/* <h5>change room</h5> */}
               <select
                 value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -165,21 +159,17 @@ const ChatPage = ({ newUsername, room }) => {
               <br></br>
               <button onClick={joinSelectedRoom}>Switch room</button>{" "}
               <h2 id="room-name">
-                {/* <p>{currentRoom}</p> */}
-               
                 <br></br>
                 <input
                   type="text"
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-                <button onClick={checkRoomInput}>create new room</button>
+                <button onClick={checkRoomInput}>Create new room</button>
               </h2>
-              {/* <p>Användare i rummet: {clientCount}</p> */}
             </div>
             <div className="chat-messages">
               <p class="usersInRoom">Active users {clientCount}</p>
-              {/* Här borde meddelande skrivas ut */}
               {messageList.map((messageContent, idx) => (
                 <p key={idx}>
                   klockan {messageContent.time} skrev {messageContent.author}:{" "}
@@ -193,7 +183,7 @@ const ChatPage = ({ newUsername, room }) => {
             <input
               id="msg"
               type="text"
-             placeholder="message.."
+              placeholder="message..."
               onChange={(e) => {
                 setCurrentMessage(e.target.value);
                 handleInputChange(e);
