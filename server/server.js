@@ -50,7 +50,10 @@ io.on("connection", (socket) => {
       rooms[roomName] = rooms[roomName].filter((id) => id !== socket.id);
       if (rooms[roomName].length === 0 && rooms[roomName] !== "Lobby") {
         delete rooms[roomName];
+        //nikela adds
+        createdRoom.delete(roomName);
       }
+      io.emit("roomList", Array.from(createdRoom))
     }
     console.log(io.sockets.adapter.rooms);
   });
@@ -71,13 +74,6 @@ io.on("connection", (socket) => {
     console.log(data);
   });
 
-  //den ska vara kvar Nikela
-
-  // socket.on('disconnet', () => {
-  //   console.log('A user has disconncted')
-  // })
-
-  // Ammar
 
   socket.on("typing", () => {
     socket.broadcast.emit("userTyping", { userId: socket.id });
