@@ -133,7 +133,7 @@ const ChatPage = ({ newUsername, room }) => {
             <h1>
               <i className="fas fa-smile"></i> Chat
             </h1>
-            <button class="leaveBtn" onClick={LeaveChat}>
+            <button className="leaveBtn" onClick={LeaveChat}>
               Leave chat, bye!
             </button>
           </header>
@@ -169,7 +169,7 @@ const ChatPage = ({ newUsername, room }) => {
               </h2>
             </div>
             <div className="chat-messages">
-              <p class="usersInRoom">Active users {clientCount}</p>
+              <p className="usersInRoom">Active users {clientCount}</p>
               {messageList.map((messageContent, idx) => (
                 <p key={idx}>
                   klockan {messageContent.time} skrev {messageContent.author}:{" "}

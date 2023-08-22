@@ -36,7 +36,7 @@ export const Users = () => {
       {!showLobby ? (
         <div className="join-container">
           <header className="join-header">
-            <h1 class="titleStartPage">START CHAT</h1>
+            <h1 className="titleStartPage">START CHAT</h1>
           </header>
           <main className="join-main">
             <form>
