@@ -80,12 +80,13 @@ const ChatPage = ({ newUsername, room }) => {
       // console.log(`client count: ${qtyOfClients}`);
     });
 
-    // Nikela?
+    // *******best-pracitce??*****
 
     // return () => {
     //   socket.off('receive_message');
     //   //socket.off('clientsInRoom');
     // };
+
   }, [socket]);
 
   useEffect(() => {
