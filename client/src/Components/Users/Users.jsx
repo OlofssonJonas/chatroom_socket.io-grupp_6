@@ -38,7 +38,7 @@ export const Users = () => {
             <h1 className="titleStartPage">START CHAT</h1>
           </header>
           <main className="join-main">
-            <form>
+            <div>
               <div className="form-control">
                 <input
                   type="text"
@@ -49,7 +49,7 @@ export const Users = () => {
               <button className="btn" onClick={start_chat_with_user}>
                 Let the chat begin!
               </button>
-            </form>
+            </div>
           </main>
         </div>
       ) : (
