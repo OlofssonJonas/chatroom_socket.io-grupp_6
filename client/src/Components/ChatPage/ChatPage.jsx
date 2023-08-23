@@ -17,9 +17,6 @@ const ChatPage = ({ newUsername, room }) => {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
 
-  // console.log(roomList);
-  // console.log(currentRoom);
-
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
@@ -29,13 +26,11 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
       await socket.emit("send_message", messageData);
-      console.log(messageData);
     }
   };
 
   const checkRoomInput = () => {
     console.log(newRoom);
-    // console.log(roomList);
     if (newRoom.trim() != "") {
       //sending username and room to the server(terminal).
       socket.emit("start_chat_with_room", newRoom);
@@ -54,7 +49,6 @@ const ChatPage = ({ newUsername, room }) => {
     console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
     setLeaveChat(true); //updating state
     changeRoom();
-    // setRoomlist(room);
     setMessageList([]);
   };
 
@@ -85,15 +79,7 @@ const ChatPage = ({ newUsername, room }) => {
 
     socket.on("clientsInRoom", (qtyOfClients) => {
       setClientCount(qtyOfClients);
-      // console.log(`client count: ${qtyOfClients}`);
     });
-
-    // *******best-pracitce??*****
-
-    // return () => {
-    //   socket.off('receive_message');
-    //   //socket.off('clientsInRoom');
-    // };
   }, [socket]);
 
   const handleInputChange = (event) => {
@@ -109,7 +95,6 @@ const ChatPage = ({ newUsername, room }) => {
     socket.on("userTyping", (data) => {
       if (!typingUsers.includes(data.userId)) {
         setTypingUsers((prevUsers) => [...prevUsers, data.userId]);
-        //console.log("User typing:", data.userId);
         setIstyping(true);
       }
       clearTimeout(typingTimeout);
@@ -126,6 +111,14 @@ const ChatPage = ({ newUsername, room }) => {
       setIstyping(false);
     });
   }, [socket, isTyping, clearTimeout]);
+
+
+  useEffect(() => {
+    const handleUnload = () => {
+      socket.emit("changeRoom", currentRoom);
+    };
+    window.addEventListener("beforeunload", handleUnload);
+  }, [socket, currentRoom]);
 
   return (
     <>
@@ -149,7 +142,7 @@ const ChatPage = ({ newUsername, room }) => {
               <hr></hr>
               <br></br>
               <select
-                value={selectedRoom}
+                value={currentRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
               >
                 {roomList.map((roomName, idx) => (
@@ -180,7 +173,6 @@ const ChatPage = ({ newUsername, room }) => {
               ))}
             </div>
           </main>
-
           <div className="chat-form-container">
             <input
               id="msg"

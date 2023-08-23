@@ -17,7 +17,6 @@ export const Users = () => {
     console.log("Starting chat with user:", newUsername);
     setCurrentRoom("Lobby");
     checkUserInput();
-    // console.log(currentRoom);
   };
 
   const checkUserInput = () => {

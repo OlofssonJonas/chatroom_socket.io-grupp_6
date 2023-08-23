@@ -18,7 +18,6 @@ app.use(cors());
 // Set to keep track of created rooms
 const createdRoom = new Set();
 const rooms = {};
-console.log(io.sockets.adapter.rooms);
 
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
@@ -38,6 +37,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    delete socket.rooms
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
@@ -45,7 +45,6 @@ io.on("connection", (socket) => {
 
   socket.on("changeRoom", (roomName) => {
     socket.leave(roomName);
-    console.log(`${socket.id} has left the room ${roomName}`);
     if (rooms[roomName]) {
       rooms[roomName] = rooms[roomName].filter((id) => id !== socket.id);
       if (rooms[roomName].length === 0 && rooms[roomName] !== "Lobby") {
@@ -55,7 +54,6 @@ io.on("connection", (socket) => {
       }
       io.emit("roomList", Array.from(createdRoom))
     }
-    console.log(io.sockets.adapter.rooms);
   });
 
   socket.on("start_chat_with_room", (room) => {
@@ -71,32 +69,16 @@ io.on("connection", (socket) => {
 
   socket.on("send_message", (data) => {
     io.to(data.room).emit("receive_message", data);
-    console.log(data);
   });
 
 
   socket.on("typing", (data) => {
-    //Här ändrade jag så att an skrev till ett specifikt rum istället för till alla utom sig själv 
-    console.log(data.room)
     socket.to(data.room).emit("userTyping", { userId: socket.id });
-    // console.log("is typing");
   });
   socket.on("stopTyping", (room) => {
     socket.to(room).emit("userStoppedTyping", { userId: socket.id });
     console.log("not typing");
   });
-  // socket.on("typing", () => {
-  //   socket
-  //     .to(roomName)
-  //     .emit("userTyping", { userId: socket.id, room: currentRoom });
-  //   console.log("is typing");
-  // });
-
-  // socket.on("stopTyping", () => {
-  //   socket
-  //     .to(roomName)
-  //     .emit("userStoppedTyping", { userId: socket.id, room: roomName });
-  //   console.log("not typing");
-  // });
+  
 });
 server.listen(3000, () => console.log("Server is up and running"));
