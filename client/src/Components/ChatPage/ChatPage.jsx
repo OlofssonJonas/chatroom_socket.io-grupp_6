@@ -23,7 +23,7 @@ const ChatPage = ({ newUsername, room }) => {
   const sendMessage = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: newRoom,
+        room: currentRoom,
         author: newUsername,
         msg: currentMessage,
         time: new Date(),
@@ -94,7 +94,6 @@ const ChatPage = ({ newUsername, room }) => {
     //   socket.off('receive_message');
     //   //socket.off('clientsInRoom');
     // };
-
   }, [socket]);
 
   const handleInputChange = (event) => {
