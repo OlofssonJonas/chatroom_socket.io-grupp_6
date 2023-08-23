@@ -1,77 +1,107 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 
+html {
+  background-color: #fff;
+}
 :root {
-	--dark-color-a: #667aff;
-	--dark-color-b: #7386ff;
-	--light-color: #e6e9ff;
-	--success-color: #5cb85c;
-	--error-color: #d9534f;
+  --dark-color-a: #000;
+  --dark-color-b: #7386ff;
+  --light-color: #fff;
+  --success-color: #5cb85c;
+  --error-color: #d9534f;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-
 ul {
-	list-style: none;
+  list-style: none;
 }
 
 .btn {
-	cursor: pointer;
-	padding: 5px 15px;
-	background: var(--light-color);
-	color: var(--dark-color-a);
-	border: 0;
-	font-size: 17px;
+  cursor: pointer;
+  padding: 5px 15px;
+  background-color: #000;
+  color: #ffffff;
+  border: 0;
 }
 
 .join-container {
-	max-width: 500px;
-	margin: 80px auto;
-	color: #fff;
+  max-width: 500px;
+  margin: 80px auto;
+  color: #fff;
 }
 
 .join-header {
-	text-align: center;
-	padding: 20px;
-	background: var(--dark-color-a);
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  text-align: center;
+  padding-top: 50px;
+  border-top: solid #ccd2c6 2px;
+  border-right: solid #ccd2c6 2px;
+  border-left: solid #ccd2c6 2px;
+  background-color: #5a786f;
+
+  font-style: normal;
+}
+
+button.btn {
+  font-size: 15px;
+  color: #ccd2c6;
+  background-color: #3a4e51;
+
+  padding: 10px;
+  width: 100px;
 }
 
 .join-main {
-	padding: 30px 40px;
-	background: var(--dark-color-b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 40px;
+  background-color: #5a786f;
+  border-bottom: solid #ccd2c6 2px;
+  border-right: solid #ccd2c6 2px;
+  border-left: solid #ccd2c6 2px;
+  height: 20rem;
+}
+
+.chat-main {
+  display: flex;
 }
 
 .join-main p {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .join-main .form-control {
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-.join-main input[type='text'] {
-	font-size: 16px;
-	padding: 5px;
-	height: 40px;
-	width: 100%;
+.join-main input[type="text"] {
+  font-size: 10px;
+  padding: 5px;
+  height: 40px;
+  width: 100%;
+  border: 2px solid #ccd2c6;
 }
 
 .join-main .btn {
-	margin-top: 20px;
-	width: 100%;
+  margin-top: 20px;
+  width: 100%;
 }
 
-@media (max-width: 700px) {
+/* @media (max-width: 700px) {
 	.chat-main {
 		display: block;
 	}
 
 	.chat-sidebar {
-		display: none;
+		display: flex;
+		flex-direction: row;
 	}
-}
+} */

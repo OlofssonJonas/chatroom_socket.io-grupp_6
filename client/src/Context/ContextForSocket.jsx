@@ -11,6 +11,7 @@ export const SocketProvider = ({ children }) => {
     const newSocket = io("http://localhost:3000/", { autoConnect: false });
     setSocket(newSocket)
 
+    //why nedan?
     return () => {
         newSocket.disconnect();
       };
