@@ -110,7 +110,7 @@ const ChatPage = ({ newUsername, room }) => {
     socket.on("userTyping", (data) => {
       if (!typingUsers.includes(data.userId)) {
         setTypingUsers((prevUsers) => [...prevUsers, data.userId]);
-        console.log("User typing:", data.userId);
+        //console.log("User typing:", data.userId);
         setIstyping(true);
       }
       clearTimeout(typingTimeout);
@@ -196,7 +196,7 @@ const ChatPage = ({ newUsername, room }) => {
             <button onClick={sendMessage} className="btn">
               Send
             </button>
-            {isTyping && <p>Someone is typing...</p>}
+            {isTyping && <p>`{newUsername} is typing...`</p>}
           </div>
         </div>
       ) : (
