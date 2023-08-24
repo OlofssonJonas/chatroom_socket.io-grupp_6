@@ -208,7 +208,7 @@ const ChatPage = ({ newUsername, room }) => {
             <button onClick={sendMessage} className="btn">
               Send
             </button>
-            {isTyping && <p>`{newUsername} is typing...`</p>}
+            {isTyping && <p>Someone is typing...</p>}
           </div>
         </div>
       ) : (
