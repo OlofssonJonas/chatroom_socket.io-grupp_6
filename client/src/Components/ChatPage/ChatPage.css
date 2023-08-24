@@ -168,9 +168,7 @@ h2#room-room {
   flex-direction: row;
 }
 
-.isTyping{
-  
-}
+
 
 .chat-messages .message {
   padding: 10px;
