@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    delete socket.rooms
+    delete socket.rooms;
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
@@ -52,8 +52,9 @@ io.on("connection", (socket) => {
         //nikela adds
         createdRoom.delete(roomName);
       }
-      io.emit("roomList", Array.from(createdRoom))
+      io.emit("roomList", Array.from(createdRoom));
     }
+    console.log(io.sockets.adapter.rooms);
   });
 
   socket.on("start_chat_with_room", (room) => {
@@ -71,7 +72,6 @@ io.on("connection", (socket) => {
     io.to(data.room).emit("receive_message", data);
   });
 
-
   socket.on("typing", (data) => {
     socket.to(data.room).emit("userTyping", { userId: socket.id });
   });
@@ -79,6 +79,5 @@ io.on("connection", (socket) => {
     socket.to(room).emit("userStoppedTyping", { userId: socket.id });
     console.log("not typing");
   });
-  
 });
 server.listen(3000, () => console.log("Server is up and running"));

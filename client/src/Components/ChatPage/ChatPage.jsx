@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import srollToBottom from 'react-scroll-to-bottom'
+import srollToBottom from "react-scroll-to-bottom";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
 import ScrollToBottom from "react-scroll-to-bottom";
-
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
@@ -19,7 +18,7 @@ const ChatPage = ({ newUsername, room }) => {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
-  const inputRef = useRef(null)
+  const inputRef = useRef(null);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -30,26 +29,31 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
       await socket.emit("send_message", messageData);
-      setCurrentMessage('')
-      inputRef.current.focus()
+      setCurrentMessage("");
+      inputRef.current.focus();
     }
   };
 
   const checkRoomInput = () => {
     console.log(newRoom);
     if (newRoom.trim() != "") {
-      //sending username and room to the server(terminal).
-      socket.emit("start_chat_with_room", newRoom);
-      console.log(newRoom);
-      setCurrentRoom(newRoom);
-      changeRoom();
-      setMessageList([]);
-      setNewroom('')
-      inputRef.current.focus()
+      if (newRoom === currentRoom) {
+        alert("Du har redan skapat rummet!");
+      } else {
+        //sending username and room to the server(terminal).
+        socket.emit("start_chat_with_room", newRoom);
+        console.log(newRoom);
+        setCurrentRoom(newRoom);
+        setSelectedRoom(newRoom);
+        changeRoom();
+        setMessageList([]);
+        setNewroom("");
+        inputRef.current.focus();
+      }
     } else {
       alert("Fältet får inte vara tomt.");
     }
-    setCurrentMessage("")
+    setCurrentMessage("");
   };
 
   const LeaveChat = () => {
@@ -68,9 +72,13 @@ const ChatPage = ({ newUsername, room }) => {
 
   const joinSelectedRoom = () => {
     if (selectedRoom.trim() != "") {
-      socket.emit("start_chat_with_room", selectedRoom);
-      setCurrentRoom(selectedRoom);
-      changeRoom();
+      if (selectedRoom === currentRoom) {
+        alert("Du är redan i detta rum!");
+      } else {
+        socket.emit("start_chat_with_room", selectedRoom);
+        setCurrentRoom(selectedRoom);
+        changeRoom();
+      }
     }
   };
 
@@ -121,7 +129,6 @@ const ChatPage = ({ newUsername, room }) => {
     });
   }, [socket, isTyping, clearTimeout]);
 
-
   useEffect(() => {
     const handleUnload = () => {
       socket.emit("changeRoom", currentRoom);
@@ -151,7 +158,7 @@ const ChatPage = ({ newUsername, room }) => {
               <hr></hr>
               <br></br>
               <select
-                value={currentRoom}
+                value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
               >
                 {roomList.map((roomName, idx) => (
@@ -174,14 +181,14 @@ const ChatPage = ({ newUsername, room }) => {
               </h2>
             </div>
             <div className="chat-messages">
-              <ScrollToBottom className="message_container"> 
-              <p className="usersInRoom">Active users {clientCount}</p>
-              {messageList.map((messageContent, idx) => (
-                <p key={idx}>
-                  klockan {messageContent.time} skrev {messageContent.author}:{" "}
-                  {messageContent.msg}
-                </p>
-              ))}
+              <ScrollToBottom className="message_container">
+                <p className="usersInRoom">Active users {clientCount}</p>
+                {messageList.map((messageContent, idx) => (
+                  <p key={idx}>
+                    klockan {messageContent.time} skrev {messageContent.author}:{" "}
+                    {messageContent.msg}
+                  </p>
+                ))}
               </ScrollToBottom>
             </div>
           </main>
