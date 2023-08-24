@@ -35,14 +35,12 @@ const ChatPage = ({ newUsername, room }) => {
   };
 
   const checkRoomInput = () => {
-    console.log(newRoom);
     if (newRoom.trim() != "") {
       if (newRoom === currentRoom) {
         alert("Du har redan skapat rummet!");
       } else {
         //sending username and room to the server(terminal).
         socket.emit("start_chat_with_room", newRoom);
-        console.log(newRoom);
         setCurrentRoom(newRoom);
         setSelectedRoom(newRoom);
         changeRoom();

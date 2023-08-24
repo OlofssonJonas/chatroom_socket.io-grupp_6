@@ -14,7 +14,6 @@ export const Users = () => {
 
   const start_chat_with_user = () => {
     socket.connect();
-    console.log("Starting chat with user:", newUsername);
     setCurrentRoom("Lobby");
     checkUserInput();
   };
