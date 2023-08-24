@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import srollToBottom from 'react-scroll-to-bottom'
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
+import ScrollToBottom from "react-scroll-to-bottom";
+
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
 
-  const [newRoom, setNewroom] = useState("Lobbyn");
+  const [newRoom, setNewroom] = useState("");
   const [roomList, setRoomlist] = useState(["Lobbyn"]);
   const [currentRoom, setCurrentRoom] = useState("Lobbyn");
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [leaveChat, setLeaveChat] = useState(false);
   const [clientCount, setClientCount] = useState(0);
-  const [selectedRoom, setSelectedRoom] = useState("Lobbyn");
+  const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
+  const inputRef = useRef(null)
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -26,6 +30,8 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
       await socket.emit("send_message", messageData);
+      setCurrentMessage('')
+      inputRef.current.focus()
     }
   };
 
@@ -38,9 +44,12 @@ const ChatPage = ({ newUsername, room }) => {
       setCurrentRoom(newRoom);
       changeRoom();
       setMessageList([]);
+      setNewroom('')
+      inputRef.current.focus()
     } else {
       alert("Fältet får inte vara tomt.");
     }
+    setCurrentMessage("")
   };
 
   const LeaveChat = () => {
@@ -157,6 +166,7 @@ const ChatPage = ({ newUsername, room }) => {
                 <br></br>
                 <input
                   type="text"
+                  ref={inputRef}
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
@@ -164,6 +174,7 @@ const ChatPage = ({ newUsername, room }) => {
               </h2>
             </div>
             <div className="chat-messages">
+              <ScrollToBottom className="message_container"> 
               <p className="usersInRoom">Active users {clientCount}</p>
               {messageList.map((messageContent, idx) => (
                 <p key={idx}>
@@ -171,12 +182,15 @@ const ChatPage = ({ newUsername, room }) => {
                   {messageContent.msg}
                 </p>
               ))}
+              </ScrollToBottom>
             </div>
           </main>
           <div className="chat-form-container">
             <input
               id="msg"
               type="text"
+              ref={inputRef}
+              value={currentMessage}
               placeholder="message..."
               onChange={(e) => {
                 setCurrentMessage(e.target.value);
