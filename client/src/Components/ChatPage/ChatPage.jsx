@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import srollToBottom from 'react-scroll-to-bottom'
+import srollToBottom from "react-scroll-to-bottom";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
 import ScrollToBottom from "react-scroll-to-bottom";
-
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
@@ -19,7 +18,7 @@ const ChatPage = ({ newUsername, room }) => {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
-  const inputRef = useRef(null)
+  const inputRef = useRef(null);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -30,8 +29,8 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
       await socket.emit("send_message", messageData);
-      setCurrentMessage('')
-      inputRef.current.focus()
+      setCurrentMessage("");
+      inputRef.current.focus();
     }
   };
 
@@ -44,12 +43,12 @@ const ChatPage = ({ newUsername, room }) => {
       setCurrentRoom(newRoom);
       changeRoom();
       setMessageList([]);
-      setNewroom('')
-      inputRef.current.focus()
+      setNewroom("");
+      inputRef.current.focus();
     } else {
       alert("Fältet får inte vara tomt.");
     }
-    setCurrentMessage("")
+    setCurrentMessage("");
   };
 
   const LeaveChat = () => {
@@ -109,7 +108,7 @@ const ChatPage = ({ newUsername, room }) => {
       clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => {
         setIstyping(false);
-      }, 10000);
+      }, 100000);
     });
 
     socket.on("userStoppedTyping", (data) => {
@@ -120,7 +119,6 @@ const ChatPage = ({ newUsername, room }) => {
       setIstyping(false);
     });
   }, [socket, isTyping, clearTimeout]);
-
 
   useEffect(() => {
     const handleUnload = () => {
@@ -149,7 +147,6 @@ const ChatPage = ({ newUsername, room }) => {
                 <i className="fas fa-comments"></i> In room: {currentRoom}
               </h5>
               <hr></hr>
-              <br></br>
               <select
                 value={currentRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -160,9 +157,10 @@ const ChatPage = ({ newUsername, room }) => {
                   </option>
                 ))}
               </select>
-              <br></br>
-              <button onClick={joinSelectedRoom}>Switch room</button>{" "}
-              <h2 id="room-name">
+              <button className="smallBtn" onClick={joinSelectedRoom}>
+                Switch room
+              </button>{" "}
+              <div id="room-name">
                 <br></br>
                 <input
                   type="text"
@@ -170,39 +168,49 @@ const ChatPage = ({ newUsername, room }) => {
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-                <button onClick={checkRoomInput}>Create new room</button>
-              </h2>
+                <button className="smallBtn" onClick={checkRoomInput}>
+                  Create new room
+                </button>
+              </div>
             </div>
             <div className="chat-messages">
-              <ScrollToBottom className="message_container"> 
-              <p className="usersInRoom">Active users {clientCount}</p>
-              {messageList.map((messageContent, idx) => (
-                <p key={idx}>
-                  klockan {messageContent.time} skrev {messageContent.author}:{" "}
-                  {messageContent.msg}
-                </p>
-              ))}
+              <ScrollToBottom className="message_container">
+                
+                {messageList.map((messageContent, idx) => (
+                  <p key={idx}>
+                    klockan {messageContent.time} skrev {messageContent.author}:{" "}
+                    {messageContent.msg}
+                  </p>
+                ))}
               </ScrollToBottom>
+              <div className="inputAndBtn">
+                <div className="isTyping">
+                  {isTyping && <p>`{newUsername} is typing...`</p>}
+                <p className="usersInRoom">{clientCount} online </p>
+                </div>
+                <div>
+                <input
+                  id="msg"
+                  type="text"
+                  ref={inputRef}
+                  value={currentMessage}
+                  placeholder="message..."
+                  onChange={(e) => {
+                    setCurrentMessage(e.target.value);
+                    handleInputChange(e);
+                  }}
+                  required
+                />
+                <button onClick={sendMessage} className="btn">
+                  Send
+                </button>
+                </div>
+              </div>
             </div>
           </main>
-          <div className="chat-form-container">
-            <input
-              id="msg"
-              type="text"
-              ref={inputRef}
-              value={currentMessage}
-              placeholder="message..."
-              onChange={(e) => {
-                setCurrentMessage(e.target.value);
-                handleInputChange(e);
-              }}
-              required
-            />
-            <button onClick={sendMessage} className="btn">
-              Send
-            </button>
+          {/* <div className="chat-form-container">
             {isTyping && <p>`{newUsername} is typing...`</p>}
-          </div>
+          </div> */}
         </div>
       ) : (
         <Users />

@@ -45,12 +45,11 @@ padding-bottom: 3rem;
 
 
 button.btn {
+  height: 2rem;
   font-size: 15px;
   color: #ccd2c6;
   background-color: #3a4e51;
 
-  padding: 10px;
-  width: 100px;
 }
 
 .join-main {
