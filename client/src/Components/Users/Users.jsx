@@ -12,11 +12,19 @@ export const Users = () => {
   const [newUsername, setNewUsername] = useState("");
   const [currentRoom, setCurrentRoom] = useState("Lobby");
 
-  const start_chat_with_user = () => {
-    socket.connect();
-    setCurrentRoom("Lobby");
-    checkUserInput();
-  };
+  const start_chat_with_user = (e) => {
+      socket.connect();
+      setCurrentRoom("Lobby");
+      checkUserInput();
+    };
+
+    const start_chat_key_down = (e) => {
+      if (e.key === 'Enter') {
+        socket.connect();
+        setCurrentRoom("Lobby");
+        checkUserInput();
+      }
+    }
 
   const checkUserInput = () => {
     if (newUsername.trim() != "") {
@@ -41,6 +49,7 @@ export const Users = () => {
               <div className="form-control">
                 <input
                   type="text"
+                  onKeyDown={start_chat_key_down}
                   onChange={(e) => setNewUsername(e.target.value)}
                   placeholder="A cool alias here..."
                 />
