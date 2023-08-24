@@ -35,9 +35,9 @@ export const Users = () => {
       {!showLobby ? (
         <div className="join-container">
           <header className="join-header">
-            <h1 className="titleStartPage">START CHAT</h1>
           </header>
           <main className="join-main">
+            <h1 className="titleStartPage">START CHAT</h1>
             <div>
               <div className="form-control">
                 <input
