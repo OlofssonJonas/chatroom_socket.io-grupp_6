@@ -168,6 +168,7 @@ const ChatPage = ({ newUsername, room }) => {
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
+                <br></br>
                 <button className="smallBtn" onClick={checkRoomInput}>
                   Create new room
                 </button>

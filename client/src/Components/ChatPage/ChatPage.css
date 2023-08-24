@@ -6,10 +6,16 @@
   --light-color: #e6e9ff;
   --success-color: #5cb85c;
   --error-color: #d9534f;
+  --btn-background-color: #acc5b4;
+  ---background-color: #ACC7B4;
 }
 
 html {
-  background-color: #8ba88e;
+  background: rgb(172,199,180);
+background: linear-gradient(90deg, rgba(172,199,180,1) 0%, rgba(106,150,119,1) 100%);
+
+  
+
 }
 * {
   /* box-sizing: border-box; */
@@ -26,6 +32,7 @@ ul {
   background: #fff;
   margin: 30px auto;
   overflow: hidden;
+  border-radius: 10px;
   /* border-bottom: solid #ccd2c6 2px;
   border-right: solid #ccd2c6 2px;
   border-left: solid #ccd2c6 2px; */
@@ -33,34 +40,42 @@ ul {
 
 
 .chat-header {
-  background: #5a786f;
-  color: #fff;
+  background-color: var(--btn-background-color);
   font-size: 11px;
   padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+ 
+
+backdrop-filter: blur( 4px );
+-webkit-backdrop-filter: blur( 4px );
+
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+  
 }
 
 .leaveBtn {
   cursor: pointer;
   font-size: 9px;
-  color: #ccd2c6;
-  background-color: #3a4e51;
+  color: #000;
+  background-color: #fff;
   border: none;
   width: 5rem;
   height: 1.5rem;
+  border-radius: 10px;
 }
 
 .smallBtn {
   cursor: pointer;
   font-size: 9px;
   color: #ccd2c6;
-  background-color: #3a4e51;
+  background-color: var(--btn-background-color);
   border: none;
   width: 13vh;
   height: 1.7rem;
   border: solid 1px #ccc;
+  border-radius: 10px;
 
   color: white;
 }
@@ -79,9 +94,12 @@ ul {
 select {
   height: 3vh;
   width: 13vh;
+  border-radius: 10px;
 }
 input {
   height: 2rem;
+  border-radius: 10px;
+  border: solid 1px #717171;
 }
 .roomSettings {
   background-color: #d9534f;
@@ -91,13 +109,15 @@ input {
   display: flex;
 
   justify-content: space-between;
+  
 }
 
 .chat-sidebar {
   width: 60%;
-  background: var(--dark-color-b);
+  background-color: rgba(159, 171, 133, 0.2);
   color: #313e45;
   padding: 26px;
+  
 
 
   display: flex;
@@ -133,9 +153,14 @@ h2#room-room {
   justify-content: end;
   max-height: 500px;
   overflow-y: scroll;
-  padding: 10px;
+  padding: 20px;
+  align-items: end;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 8px 32px 0 rgba(111, 111, 111, 0.37);
+
 }
 
 .inputAndBtn{
