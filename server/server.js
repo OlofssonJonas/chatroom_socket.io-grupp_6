@@ -18,7 +18,6 @@ app.use(cors());
 // Set to keep track of created rooms
 const createdRoom = new Set();
 const rooms = {};
-const activeUsers = {}
 
 
 
@@ -40,7 +39,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete socket.room;
-    delete activeUsers[socket.id]
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
