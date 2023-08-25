@@ -40,7 +40,7 @@ ul {
 
 
 .chat-header {
-  background-color: var(--btn-background-color);
+  background-color: #dbddd6;
   font-size: 11px;
   padding: 15px;
   display: flex;
@@ -159,7 +159,7 @@ h2#room-room {
   margin-right: auto;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 8px 32px 0 rgba(111, 111, 111, 0.37);
+  
 
 }
 
