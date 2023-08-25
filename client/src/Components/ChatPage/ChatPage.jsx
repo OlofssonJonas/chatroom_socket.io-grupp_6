@@ -20,39 +20,77 @@ const ChatPage = ({ newUsername, room }) => {
   const [isTyping, setIstyping] = useState(false);
   const inputRef = useRef(null);
 
-  const sendMessage = async () => {
-    if (currentMessage !== "") {
-      const messageData = {
-        room: currentRoom,
-        author: newUsername,
-        msg: currentMessage,
-        time: new Date(),
-      };
-      await socket.emit("send_message", messageData);
-      setCurrentMessage("");
-      inputRef.current.focus();
+  const sendMessage = async (e) => {
+      if (currentMessage !== "") {
+        const messageData = {
+          room: currentRoom,
+          author: newUsername,
+          msg: currentMessage,
+          time: new Date(),
+        };
+        await socket.emit("send_message", messageData);
+        setCurrentMessage("");
+        inputRef.current.focus();
+      }
+  };
+
+  const sendMessageKeyDown = async (e) => {
+    if (e.key === 'Enter') {
+      if (currentMessage !== "") {
+        const messageData = {
+          room: currentRoom,
+          author: newUsername,
+          msg: currentMessage,
+          time: new Date(),
+        };
+        await socket.emit("send_message", messageData);
+        setCurrentMessage("");
+        inputRef.current.focus();
+      }
     }
   };
 
-  const checkRoomInput = () => {
-    if (newRoom.trim() != "") {
-      if (newRoom === currentRoom) {
-        alert("Du har redan skapat rummet!");
+  const checkRoomInput = (e) => {
+      if (newRoom.trim() != "") {
+        if (newRoom === currentRoom) {
+          alert("Du har redan skapat rummet!");
+        } else {
+          //sending username and room to the server(terminal).
+          socket.emit("start_chat_with_rooms", newRoom);
+          setCurrentRoom(newRoom);
+          setSelectedRoom(newRoom);
+          changeRoom();
+          setMessageList([]);
+          setNewroom("");
+          inputRef.current.focus();
+        }
       } else {
-        //sending username and room to the server(terminal).
-        socket.emit("start_chat_with_room", newRoom);
-        setCurrentRoom(newRoom);
-        setSelectedRoom(newRoom);
-        changeRoom();
-        setMessageList([]);
-        setNewroom("");
-        inputRef.current.focus();
+        alert("Fältet får inte vara tomt.");
       }
-    } else {
-      alert("Fältet får inte vara tomt.");
-    }
-    setCurrentMessage("");
-  };
+      setCurrentMessage("");
+    };
+
+    const checkRoomInputKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        if (newRoom.trim() != "") {
+          if (newRoom === currentRoom) {
+            alert("Du har redan skapat rummet!");
+          } else {
+            //sending username and room to the server(terminal).
+            socket.emit("start_chat_with_room", newRoom);
+            setCurrentRoom(newRoom);
+            setSelectedRoom(newRoom);
+            changeRoom();
+            setMessageList([]);
+            setNewroom("");
+            inputRef.current.focus();
+          }
+        } else {
+          alert("Fältet får inte vara tomt.");
+        }
+        setCurrentMessage("");
+      }
+      };
 
   const LeaveChat = () => {
     console.log("Left chat");
@@ -171,6 +209,7 @@ const ChatPage = ({ newUsername, room }) => {
                 <br></br>
                 <input
                   type="text"
+                  onKeyDown={checkRoomInputKeyDown}
                   ref={inputRef}
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
@@ -193,6 +232,7 @@ const ChatPage = ({ newUsername, room }) => {
           <div className="chat-form-container">
             <input
               id="msg"
+              onKeyDown={sendMessageKeyDown}
               type="text"
               ref={inputRef}
               value={currentMessage}
