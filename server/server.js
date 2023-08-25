@@ -17,9 +17,6 @@ app.use(cors());
 
 // Set to keep track of created rooms
 const createdRoom = new Set();
-//const rooms = {};
-//const activeUsers = {}
-
 
 
 //Event-handling for sockiet.io
@@ -41,7 +38,7 @@ io.on("connection", (socket) => {
   
   socket.on("disconnect", () => {
     delete socket.room;
-    //delete activeUsers[socket.id]
+
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     console.log(io.sockets.adapter.rooms)
