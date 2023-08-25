@@ -56,7 +56,7 @@ const ChatPage = ({ newUsername, room }) => {
           alert("Du har redan skapat rummet!");
         } else {
           //sending username and room to the server(terminal).
-          socket.emit("start_chat_with_room", newRoom);
+          socket.emit("start_chat_with_rooms", newRoom);
           setCurrentRoom(newRoom);
           setSelectedRoom(newRoom);
           changeRoom();
