@@ -18,15 +18,13 @@ app.use(cors());
 // Set to keep track of created rooms
 const createdRoom = new Set();
 
-
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join("Lobbyn");
-  
   createdRoom.add("Lobbyn", Array.from(createdRoom)); //add room to set
   io.emit("roomList", Array.from(createdRoom)); // sending list of rooms to clients
   console.log("new client connected", socket.id);
-  
+
   socket.on("start_chat_with_user", (username, room) => {
     console.log(`User with name: ${username} has joined the ${room}`);
     socket.broadcast.to("start_chat_with_user", username);
@@ -34,60 +32,53 @@ io.on("connection", (socket) => {
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
+    console.log("Connection with user", io.sockets.adapter.rooms);
   });
-  
+
   socket.on("disconnect", () => {
     delete socket.room;
 
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
-    console.log(io.sockets.adapter.rooms)
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
+    console.log("disconnected", io.sockets.adapter.rooms);
   });
-  
+
   socket.on("changeRoom", (roomName) => {
     if (createdRoom.has(roomName)) {
       socket.leave(roomName);
-      if(roomName !== 'Lobbyn') {
+      if (roomName !== "Lobbyn") {
         createdRoom.delete(roomName);
-        console.log(roomName)
-        //console.log('nu är jag här')
-        console.log(io.sockets.adapter.rooms)
-      }
-      // rooms[roomName] = rooms[roomName].filter((id) => id !== socket.id);
-      // if (rooms[roomName].length === 0 && rooms[roomName] !== "Lobbyn") {
-        //   delete rooms[roomName];
-        //   //nikela adds
-        //   createdRoom.delete(roomName);
-        // }
-        // io.emit("roomList", Array.from(createdRoom));
-      }
-      //console.log(io.sockets.adapter.rooms);
-    });
-    
-    socket.on("start_chat_with_room", (roomName) => {
-    console.log(io.sockets.adapter.rooms) 
-    createdRoom.add(roomName);
-    io.emit("roomList", Array.from(createdRoom));
-    socket.join(roomName);
-
-    if (createdRoom.has(roomName)) {
-      socket.leave(roomName);
-      if(roomName !== 'Lobbyn') {
-        createdRoom.delete(roomName);
-        console.log(roomName)
-        console.log('nu är jag här')
-        console.log(io.sockets.adapter.rooms)
+        console.log(roomName);
       }
     }
+  });
 
+  socket.on("start_chat_with_room", (roomName) => {
+    const currentRooms = Array.from(socket.rooms);
 
+    currentRooms.forEach((currentRoom) => {
+      if (currentRoom !== socket.id) {
+        socket.leave(currentRoom);
+        if (currentRoom !== "Lobbyn") {
+          const roomClients = io.sockets.adapter.rooms.get(currentRoom);
 
-    // if (!rooms[room]) {
-    //   rooms[room] = [socket.id];
-    // } else {
-    //   rooms[room].push(socket.id);
-    // }
+          if (!roomClients || roomClients.size === 0) {
+            createdRoom.delete(currentRoom); // Ta bort tomma rum från createdRoom
+            io.emit("roomList", Array.from(createdRoom));
+          }
+        }
+      }
+    });
+
+    if (!createdRoom.has(roomName)) {
+      createdRoom.add(roomName);
+      io.emit("roomList", Array.from(createdRoom));
+    }
+
+    socket.join(roomName);
+
+    console.log("Rum som är kvar:", io.sockets.adapter.rooms);
   });
 
   socket.on("send_message", (data) => {

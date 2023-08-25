@@ -31,6 +31,7 @@ const ChatPage = ({ newUsername, room }) => {
       await socket.emit("send_message", messageData);
       setCurrentMessage("");
       inputRef.current.focus();
+      console.log(messageData);
     }
   };
 
@@ -57,11 +58,12 @@ const ChatPage = ({ newUsername, room }) => {
       } else {
         //sending username and room to the server(terminal).
         socket.emit("start_chat_with_room", newRoom);
+        console.log(newRoom);
         setCurrentRoom(newRoom);
         setSelectedRoom(newRoom);
         changeRoom();
         setMessageList([]);
-        setNewroom("");
+        // setNewroom("");
         inputRef.current.focus();
       }
     } else {
