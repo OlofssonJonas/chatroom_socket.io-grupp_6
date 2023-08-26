@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import srollToBottom from "react-scroll-to-bottom";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
@@ -63,7 +62,6 @@ const ChatPage = ({ newUsername, room }) => {
         setSelectedRoom(newRoom);
         changeRoom();
         setMessageList([]);
-        // setNewroom("");
         inputRef.current.focus();
       }
     } else {
@@ -97,8 +95,8 @@ const ChatPage = ({ newUsername, room }) => {
   const LeaveChat = () => {
     console.log("Left chat");
     socket.disconnect();
-    console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
-    setLeaveChat(true); //updating state
+    console.log("Socket disconnected:", socket.disconnected);
+    setLeaveChat(true);
     changeRoom();
     setMessageList([]);
   };
@@ -139,9 +137,7 @@ const ChatPage = ({ newUsername, room }) => {
 
   const handleInputChange = (event) => {
     if (event.target.value !== "") {
-      socket.emit("typing", { room: currentRoom, userId: newUsername }); //room för att skicka rätt rum
-    } else {
-      socket.emit("stopTyping", { room: currentRoom, userId: newUsername });
+      socket.emit("typing", { room: currentRoom, userId: newUsername });
     }
   };
 
@@ -155,7 +151,7 @@ const ChatPage = ({ newUsername, room }) => {
       clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => {
         setIstyping(false);
-      }, 10000);
+      }, 4000);
     });
 
     socket.on("userStoppedTyping", (data) => {
