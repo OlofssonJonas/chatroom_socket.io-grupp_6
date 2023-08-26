@@ -50,6 +50,7 @@ io.on("connection", (socket) => {
       if (roomName !== "Lobbyn") {
         createdRoom.delete(roomName);
         console.log(roomName);
+        io.emit("roomList", Array.from(createdRoom));
       }
     }
   });
