@@ -138,8 +138,6 @@ const ChatPage = ({ newUsername, room }) => {
   const handleInputChange = (event) => {
     if (event.target.value !== "") {
       socket.emit("typing", { room: currentRoom, userId: newUsername });
-    } else {
-      socket.emit("stopTyping", { room: currentRoom, userId: newUsername });
     }
   };
 

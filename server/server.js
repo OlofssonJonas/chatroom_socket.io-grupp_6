@@ -89,9 +89,5 @@ io.on("connection", (socket) => {
   socket.on("typing", (data) => {
     socket.to(data.room).emit("userTyping", { userId: socket.id });
   });
-  socket.on("stopTyping", (room) => {
-    socket.to(room).emit("userStoppedTyping", { userId: socket.id });
-    console.log("not typing");
-  });
 });
 server.listen(3000, () => console.log("Server is up and running"));
