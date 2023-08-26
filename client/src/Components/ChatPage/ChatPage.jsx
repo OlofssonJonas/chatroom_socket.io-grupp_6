@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
 
-  const [newRoom, setNewroom] = useState("Lobbyn");
+  const [newRoom, setNewroom] = useState("");
   const [roomList, setRoomlist] = useState(["Lobbyn"]);
   const [currentRoom, setCurrentRoom] = useState("Lobbyn");
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [leaveChat, setLeaveChat] = useState(false);
   const [clientCount, setClientCount] = useState(0);
-  const [selectedRoom, setSelectedRoom] = useState("Lobbyn");
+  const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
+  const inputRef = useRef(null);
 
-  const sendMessage = async () => {
+  const sendMessage = async (e) => {
     if (currentMessage !== "") {
       const messageData = {
         room: currentRoom,
@@ -26,28 +28,75 @@ const ChatPage = ({ newUsername, room }) => {
         time: new Date(),
       };
       await socket.emit("send_message", messageData);
+      setCurrentMessage("");
+      inputRef.current.focus();
+      console.log(messageData);
     }
   };
 
-  const checkRoomInput = () => {
-    console.log(newRoom);
+  const sendMessageKeyDown = async (e) => {
+    if (e.key === "Enter") {
+      if (currentMessage !== "") {
+        const messageData = {
+          room: currentRoom,
+          author: newUsername,
+          msg: currentMessage,
+          time: new Date(),
+        };
+        await socket.emit("send_message", messageData);
+        setCurrentMessage("");
+        inputRef.current.focus();
+      }
+    }
+  };
+
+  const checkRoomInput = (e) => {
     if (newRoom.trim() != "") {
-      //sending username and room to the server(terminal).
-      socket.emit("start_chat_with_room", newRoom);
-      console.log(newRoom);
-      setCurrentRoom(newRoom);
-      changeRoom();
-      setMessageList([]);
+      if (newRoom === currentRoom) {
+        alert("Du har redan skapat rummet!");
+      } else {
+        //sending username and room to the server(terminal).
+        socket.emit("start_chat_with_room", newRoom);
+        console.log(newRoom);
+        setCurrentRoom(newRoom);
+        setSelectedRoom(newRoom);
+        changeRoom();
+        setMessageList([]);
+        inputRef.current.focus();
+      }
     } else {
       alert("Fältet får inte vara tomt.");
+    }
+    setCurrentMessage("");
+  };
+
+  const checkRoomInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (newRoom.trim() != "") {
+        if (newRoom === currentRoom) {
+          alert("Du har redan skapat rummet!");
+        } else {
+          //sending username and room to the server(terminal).
+          socket.emit("start_chat_with_room", newRoom);
+          setCurrentRoom(newRoom);
+          setSelectedRoom(newRoom);
+          changeRoom();
+          setMessageList([]);
+          setNewroom("");
+          inputRef.current.focus();
+        }
+      } else {
+        alert("Fältet får inte vara tomt.");
+      }
+      setCurrentMessage("");
     }
   };
 
   const LeaveChat = () => {
     console.log("Left chat");
     socket.disconnect();
-    console.log("Socket disconnected:", socket.disconnected); //boolean proves cocket`s disconnect
-    setLeaveChat(true); //updating state
+    console.log("Socket disconnected:", socket.disconnected);
+    setLeaveChat(true);
     changeRoom();
     setMessageList([]);
   };
@@ -59,9 +108,13 @@ const ChatPage = ({ newUsername, room }) => {
 
   const joinSelectedRoom = () => {
     if (selectedRoom.trim() != "") {
-      socket.emit("start_chat_with_room", selectedRoom);
-      setCurrentRoom(selectedRoom);
-      changeRoom();
+      if (selectedRoom === currentRoom) {
+        alert("Du är redan i detta rum!");
+      } else {
+        socket.emit("start_chat_with_room", selectedRoom);
+        setCurrentRoom(selectedRoom);
+        changeRoom();
+      }
     }
   };
 
@@ -84,9 +137,7 @@ const ChatPage = ({ newUsername, room }) => {
 
   const handleInputChange = (event) => {
     if (event.target.value !== "") {
-      socket.emit("typing", { room: currentRoom, userId: newUsername }); //room för att skicka rätt rum
-    } else {
-      socket.emit("stopTyping", { room: currentRoom, userId: newUsername });
+      socket.emit("typing", { room: currentRoom, userId: newUsername });
     }
   };
 
@@ -100,7 +151,7 @@ const ChatPage = ({ newUsername, room }) => {
       clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => {
         setIstyping(false);
-      }, 10000);
+      }, 4000);
     });
 
     socket.on("userStoppedTyping", (data) => {
@@ -111,7 +162,6 @@ const ChatPage = ({ newUsername, room }) => {
       setIstyping(false);
     });
   }, [socket, isTyping, clearTimeout]);
-
 
   useEffect(() => {
     const handleUnload = () => {
@@ -142,7 +192,7 @@ const ChatPage = ({ newUsername, room }) => {
               <hr></hr>
               <br></br>
               <select
-                value={currentRoom}
+                value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
               >
                 {roomList.map((roomName, idx) => (
@@ -157,6 +207,8 @@ const ChatPage = ({ newUsername, room }) => {
                 <br></br>
                 <input
                   type="text"
+                  onKeyDown={checkRoomInputKeyDown}
+                  ref={inputRef}
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
@@ -164,19 +216,24 @@ const ChatPage = ({ newUsername, room }) => {
               </h2>
             </div>
             <div className="chat-messages">
-              <p className="usersInRoom">Active users {clientCount}</p>
-              {messageList.map((messageContent, idx) => (
-                <p key={idx}>
-                  klockan {messageContent.time} skrev {messageContent.author}:{" "}
-                  {messageContent.msg}
-                </p>
-              ))}
+              <ScrollToBottom className="message_container">
+                <p className="usersInRoom">Active users {clientCount}</p>
+                {messageList.map((messageContent, idx) => (
+                  <p key={idx}>
+                    klockan {messageContent.time} skrev {messageContent.author}:{" "}
+                    {messageContent.msg}
+                  </p>
+                ))}
+              </ScrollToBottom>
             </div>
           </main>
           <div className="chat-form-container">
             <input
               id="msg"
+              onKeyDown={sendMessageKeyDown}
               type="text"
+              ref={inputRef}
+              value={currentMessage}
               placeholder="message..."
               onChange={(e) => {
                 setCurrentMessage(e.target.value);
@@ -187,7 +244,7 @@ const ChatPage = ({ newUsername, room }) => {
             <button onClick={sendMessage} className="btn">
               Send
             </button>
-            {isTyping && <p>`{newUsername} is typing...`</p>}
+            {isTyping && <p>Someone is typing...</p>}
           </div>
         </div>
       ) : (
