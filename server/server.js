@@ -45,11 +45,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("changeRoom", (roomName) => {
-    if (createdRoom.has(roomName)) {
-      socket.leave(roomName);
-      if (roomName !== "Lobbyn") {
+    socket.leave(roomName);
+    if (roomName !== "Lobbyn") {
+      const roomClients = io.sockets.adapter.rooms.get(roomName);
+      if (!roomClients || roomClients.size === 0) {
         createdRoom.delete(roomName);
-        console.log(roomName);
         io.emit("roomList", Array.from(createdRoom));
       }
     }
