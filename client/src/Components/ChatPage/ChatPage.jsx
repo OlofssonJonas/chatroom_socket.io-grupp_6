@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import srollToBottom from "react-scroll-to-bottom";
 import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
@@ -20,7 +19,6 @@ const ChatPage = ({ newUsername, room }) => {
   const [isTyping, setIstyping] = useState(false);
   const inputRef = useRef(null);
 
-
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
       if (currentMessage !== "") {
@@ -30,9 +28,11 @@ const ChatPage = ({ newUsername, room }) => {
           msg: currentMessage,
           time: new Date(),
         };
+
         await socket.emit("send_message", messageData);
         setCurrentMessage("");
         inputRef.current.focus();
+        console.log(messageData);
       }
     }
   };
@@ -46,11 +46,12 @@ const ChatPage = ({ newUsername, room }) => {
         } else {
           //sending username and room to the server(terminal).
           socket.emit("start_chat_with_room", newRoom);
+          console.log(newRoom);
           setCurrentRoom(newRoom);
           setSelectedRoom(newRoom);
           changeRoom();
           setMessageList([]);
-          setNewroom("");
+          // setNewroom("");
           inputRef.current.focus();
         }
       } else {
@@ -102,9 +103,7 @@ const ChatPage = ({ newUsername, room }) => {
 
   const handleInputChange = (event) => {
     if (event.target.value !== "") {
-      socket.emit("typing", { room: currentRoom, userId: newUsername }); //room för att skicka rätt rum
-    } else {
-      socket.emit("stopTyping", { room: currentRoom, userId: newUsername });
+      socket.emit("typing", { room: currentRoom, userId: newUsername });
     }
   };
 
@@ -197,7 +196,7 @@ const ChatPage = ({ newUsername, room }) => {
           <div className="chat-form-container">
             <input
               id="msg"
-              onKeyDown={sendMessage  }
+              onKeyDown={sendMessage}
               type="text"
               ref={inputRef}
               value={currentMessage}
