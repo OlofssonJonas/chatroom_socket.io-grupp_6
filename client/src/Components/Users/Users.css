@@ -3,12 +3,15 @@
 html {
   background-color: #fff;
 }
+
 :root {
   --dark-color-a: #000;
   --dark-color-b: #7386ff;
   --light-color: #fff;
   --success-color: #5cb85c;
   --error-color: #d9534f;
+  --btn-background-color: #6381a4;
+  ---background-color: #acc7b4;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -31,43 +34,44 @@ ul {
 }
 
 .join-container {
-  max-width: 500px;
+  max-width: 50vh;
   margin: 80px auto;
   color: #fff;
 }
 
-.join-header {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 11px;
-  text-align: center;
-  padding-top: 50px;
-  border-top: solid #ccd2c6 2px;
-  border-right: solid #ccd2c6 2px;
-  border-left: solid #ccd2c6 2px;
-  background-color: #5a786f;
-
-  font-style: normal;
+.titleStartPage {
+  padding-bottom: 3rem;
+  color: ---ba;
 }
 
 button.btn {
+  height: 2rem;
   font-size: 15px;
-  color: #ccd2c6;
-  background-color: #3a4e51;
-
-  padding: 10px;
-  width: 100px;
+  color: #fff;
+  background-color: var(--btn-background-color);
+  border-radius: 10px;
+  border: 1px solid;
 }
 
 .join-main {
+  align-content: space-around;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding-bottom: 40px;
-  background-color: #5a786f;
-  border-bottom: solid #ccd2c6 2px;
-  border-right: solid #ccd2c6 2px;
-  border-left: solid #ccd2c6 2px;
-  height: 20rem;
+  /* From https://css.glass */
+  /* From https://css.glass *
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(178, 178, 178, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid #ffffff;
+  height: 30rem;
+  padding-left: 2vh;
+  padding-right: 2vh;
 }
 
 .chat-main {
@@ -87,7 +91,8 @@ button.btn {
   padding: 5px;
   height: 40px;
   width: 100%;
-  border: 2px solid #ccd2c6;
+  border: 2px solid ---btn-background-color;
+  border-radius: 10px;
 }
 
 .join-main .btn {
@@ -96,12 +101,12 @@ button.btn {
 }
 
 /* @media (max-width: 700px) {
-	.chat-main {
-		display: block;
-	}
+  .chat-main {
+    display: block;
+  }
 
-	.chat-sidebar {
-		display: flex;
-		flex-direction: row;
-	}
+  .chat-sidebar {
+    display: flex;
+    flex-direction: row;
+  }
 } */
