@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const app = express();
-const server = http.createServer(app);
+const server = http.createServer(app); 
 
 const io = new Server(server, {
   cors: {
@@ -44,12 +44,14 @@ io.on("connection", (socket) => {
     console.log("disconnected", io.sockets.adapter.rooms);
   });
 
+
   socket.on("changeRoom", (roomName) => {
-    if (createdRoom.has(roomName)) {
-      socket.leave(roomName);
-      if (roomName !== "Lobbyn") {
+    socket.leave(roomName);
+    if (roomName !== "Lobbyn") {
+      const roomClients = io.sockets.adapter.rooms.get(roomName);
+      if (!roomClients || roomClients.size === 0) {
         createdRoom.delete(roomName);
-        console.log(roomName);
+        io.emit("roomList", Array.from(createdRoom));
       }
     }
   });
