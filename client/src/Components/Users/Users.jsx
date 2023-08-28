@@ -12,14 +12,9 @@ export const Users = () => {
   const [newUsername, setNewUsername] = useState("");
   const [currentRoom, setCurrentRoom] = useState("Lobby");
 
-  const start_chat_with_user = (e) => {
-      socket.connect();
-      setCurrentRoom("Lobby");
-      checkUserInput();
-    };
 
-    const start_chat_key_down = (e) => {
-      if (e.key === 'Enter') {
+    const start_chat_with_user = (e) => {
+      if (e.key === 'Enter' || !e.key) {
         socket.connect();
         setCurrentRoom("Lobby");
         checkUserInput();
@@ -42,14 +37,14 @@ export const Users = () => {
       {!showLobby ? (
         <div className="join-container">
           <header className="join-header">
-            <h1 className="titleStartPage">START CHAT</h1>
           </header>
           <main className="join-main">
+            <h1 className="titleStartPage">START CHAT</h1>
             <div>
               <div className="form-control">
                 <input
                   type="text"
-                  onKeyDown={start_chat_key_down}
+                  onKeyDown={start_chat_with_user}
                   onChange={(e) => setNewUsername(e.target.value)}
                   placeholder="A cool alias here..."
                 />
@@ -70,5 +65,4 @@ export const Users = () => {
     </>
   );
 };
-
 export default Users;
