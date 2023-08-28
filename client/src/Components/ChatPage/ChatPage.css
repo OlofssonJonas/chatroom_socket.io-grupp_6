@@ -137,7 +137,9 @@ justify-content: end;
 /* .chat-form-container form {
   display: flex;
 } */
-
+.message_container {
+  height: 300px;
+}
 
 .chat-form-container input[type="text"] {
   font-size: 16px;
