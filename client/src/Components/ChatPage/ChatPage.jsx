@@ -26,7 +26,10 @@ const ChatPage = ({ newUsername, room }) => {
           room: currentRoom,
           author: newUsername,
           msg: currentMessage,
-          time: new Date(),
+          time: new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+
         };
 
         await socket.emit("send_message", messageData);
@@ -185,10 +188,14 @@ const ChatPage = ({ newUsername, room }) => {
             <div className="chat-messages">
               <ScrollToBottom className="message_container">
                 {messageList.map((messageContent, idx) => (
-                  <p key={idx}>
-                    klockan {messageContent.time} skrev {messageContent.author}:{" "}
+                  <div key={idx}  id={newUsername === messageContent.author ? "you" : "other"} >
+                   
+                    <div className="msgText">
+                    {messageContent.time} {messageContent.author}{" "}</div>
+                      <div className="msgBubble">
                     {messageContent.msg}
-                  </p>
+                    </div>
+                  </div>
                 ))}
               </ScrollToBottom>
               <div className="inputAndBtn">
