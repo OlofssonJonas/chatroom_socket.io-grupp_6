@@ -32,7 +32,6 @@ const ChatPage = ({ newUsername, room }) => {
         await socket.emit("send_message", messageData);
         setCurrentMessage("");
         inputRef.current.focus();
-        console.log(messageData);
       }
     }
   };
@@ -46,12 +45,11 @@ const ChatPage = ({ newUsername, room }) => {
         } else {
           //sending username and room to the server(terminal).
           socket.emit("start_chat_with_room", newRoom);
-          console.log(newRoom);
           setCurrentRoom(newRoom);
           setSelectedRoom(newRoom);
           changeRoom();
           setMessageList([]);
-          // setNewroom("");
+           setNewroom("");
           inputRef.current.focus();
         }
       } else {
@@ -156,9 +154,8 @@ const ChatPage = ({ newUsername, room }) => {
                 <i className="fas fa-comments"></i> In room: {currentRoom}
               </h5>
               <hr></hr>
-              <br></br>
               <select
-                value={selectedRoom}
+                value={currentRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
               >
                 {roomList.map((roomName, idx) => (
@@ -167,9 +164,10 @@ const ChatPage = ({ newUsername, room }) => {
                   </option>
                 ))}
               </select>
-              <br></br>
-              <button onClick={joinSelectedRoom}>Switch room</button>{" "}
-              <h2 id="room-name">
+              <button className="smallBtn" onClick={joinSelectedRoom}>
+                Switch room
+              </button>
+              <div id="room-name">
                 <br></br>
                 <input
                   type="text"
@@ -178,12 +176,14 @@ const ChatPage = ({ newUsername, room }) => {
                   value={newRoom}
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-                <button onClick={checkRoomInput}>Create new room</button>
-              </h2>
+                <br></br>
+                <button className="smallBtn" onClick={checkRoomInput}>
+                  Create new room
+                </button>
+              </div>
             </div>
             <div className="chat-messages">
               <ScrollToBottom className="message_container">
-                <p className="usersInRoom">Active users {clientCount}</p>
                 {messageList.map((messageContent, idx) => (
                   <p key={idx}>
                     klockan {messageContent.time} skrev {messageContent.author}:{" "}
@@ -191,27 +191,32 @@ const ChatPage = ({ newUsername, room }) => {
                   </p>
                 ))}
               </ScrollToBottom>
+              <div className="inputAndBtn">
+                <div className="isTyping">
+                  {isTyping && <p>`{newUsername} is typing...`</p>}
+                <p className="usersInRoom">{clientCount} online </p>
+                </div>
+                <div>
+                <input
+                  id="msg"
+                  type="text"
+                  ref={inputRef}
+                  onKeyDown={sendMessage}
+                  value={currentMessage}
+                  placeholder="message..."
+                  onChange={(e) => {
+                    setCurrentMessage(e.target.value);
+                    handleInputChange(e);
+                  }}
+                  required
+                />
+                <button onClick={sendMessage} className="btn">
+                  Send
+                </button>
+                </div>
+              </div>
             </div>
           </main>
-          <div className="chat-form-container">
-            <input
-              id="msg"
-              onKeyDown={sendMessage}
-              type="text"
-              ref={inputRef}
-              value={currentMessage}
-              placeholder="message..."
-              onChange={(e) => {
-                setCurrentMessage(e.target.value);
-                handleInputChange(e);
-              }}
-              required
-            />
-            <button onClick={sendMessage} className="btn">
-              Send
-            </button>
-            {isTyping && <p>Someone is typing...</p>}
-          </div>
         </div>
       ) : (
         <Users />
@@ -219,5 +224,4 @@ const ChatPage = ({ newUsername, room }) => {
     </>
   );
 };
-
 export default ChatPage;
