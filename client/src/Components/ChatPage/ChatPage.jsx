@@ -37,25 +37,10 @@ const ChatPage = ({ newUsername, room }) => {
     }
   };
 
-  // const sendMessageKeyDown = async (e) => {
-  //   if (e.key === "Enter") {
-  //     if (currentMessage !== "") {
-  //       const messageData = {
-  //         room: currentRoom,
-  //         author: newUsername,
-  //         msg: currentMessage,
-  //         time: new Date(),
-  //       };
-  //       await socket.emit("send_message", messageData);
-  //       setCurrentMessage("");
-  //       inputRef.current.focus();
-  //     }
-  //   }
-  // };
 
   const checkRoomInput = (e) => {
-    if (e.key === "Enter" || e.type === "click") {
-      if (newRoom.trim() !== "") {
+    if (e.key === "Enter" || !e.key) {
+      if (newRoom.trim() != "") {
         if (newRoom === currentRoom) {
           alert("Du har redan skapat rummet!");
         } else {
@@ -76,35 +61,10 @@ const ChatPage = ({ newUsername, room }) => {
     }
   };
 
-  // const checkRoomInputKeyDown = (e) => {
-  //   if (e.key === "Enter") {
-  //     if (newRoom.trim() != "") {
-  //       if (newRoom === currentRoom) {
-  //         alert("Du har redan skapat rummet!");
-  //       } else {
-  //         //sending username and room to the server(terminal).
-  //         socket.emit("start_chat_with_room", newRoom);
-  //         setCurrentRoom(newRoom);
-  //         setSelectedRoom(newRoom);
-  //         changeRoom();
-  //         setMessageList([]);
-  //         setNewroom("");
-  //         inputRef.current.focus();
-  //       }
-  //     } else {
-  //       alert("Fältet får inte vara tomt.");
-  //     }
-  //     setCurrentMessage("");
-  //   }
-  // };
-
   const LeaveChat = () => {
-    console.log("Left chat");
     socket.disconnect();
-    console.log("Socket disconnected:", socket.disconnected);
-    setLeaveChat(true);
+    setLeaveChat(true); //updating state
     changeRoom();
-    setMessageList([]);
   };
 
   const changeRoom = () => {

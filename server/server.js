@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const app = express();
-const server = http.createServer(app);
+const server = http.createServer(app); 
 
 const io = new Server(server, {
   cors: {
@@ -43,6 +43,7 @@ io.on("connection", (socket) => {
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
     console.log("disconnected", io.sockets.adapter.rooms);
   });
+
 
   socket.on("changeRoom", (roomName) => {
     socket.leave(roomName);
