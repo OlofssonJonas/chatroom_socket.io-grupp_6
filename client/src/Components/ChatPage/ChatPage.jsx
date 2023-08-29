@@ -3,6 +3,7 @@ import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
 import ScrollToBottom from "react-scroll-to-bottom";
+import axios from 'axios'
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
@@ -17,19 +18,38 @@ const ChatPage = ({ newUsername, room }) => {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
+  const [randomGifUrl, setRandomGifUrl] = useState("");
   const inputRef = useRef(null);
+
+
+  const fetchRandomGif = async () => {
+    try {
+      const endpoint = `https://api.giphy.com/v1/gifs/random?api_key=${import.meta.env.VITE_API_KEY}`;
+      
+      const response = await axios.get(endpoint);
+      if (response.status === 200) {
+        const gifUrl = response.data.data.images.original.url;
+        console.log(response.data.data.images.original.url)
+        setRandomGifUrl(gifUrl);
+      }
+    } catch (error) {
+      console.error('Error fetching random GIF:', error);
+    }
+  };
+  
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
-      if (currentMessage !== "") {
+      if (currentMessage === '/gif') {
+        fetchRandomGif()
+        setCurrentMessage('')
+        inputRef.current.focus()
+      } else if (currentMessage !== "") {
         const messageData = {
           room: currentRoom,
           author: newUsername,
           msg: currentMessage,
-          time: new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
-
+          time: new Date(),
         };
 
         await socket.emit("send_message", messageData);
@@ -187,20 +207,19 @@ const ChatPage = ({ newUsername, room }) => {
             </div>
             <div className="chat-messages">
               <ScrollToBottom className="message_container">
+                <div className="gifContainer">
+                    {randomGifUrl && <img src={randomGifUrl} alt="Random Gif" />}
+                </div>
                 {messageList.map((messageContent, idx) => (
-                  <div key={idx}  id={newUsername === messageContent.author ? "you" : "other"} >
-                   
-                    <div className="msgText">
-                    {messageContent.time} {messageContent.author}{" "}</div>
-                      <div className="msgBubble">
+                  <p key={idx}>
+                    klockan {messageContent.time} skrev {messageContent.author}:{" "}
                     {messageContent.msg}
-                    </div>
-                  </div>
+                  </p>
                 ))}
               </ScrollToBottom>
               <div className="inputAndBtn">
                 <div className="isTyping">
-                  {isTyping && <p>`{newUsername} is typing...`</p>}
+                  {isTyping && <p>`Someone is typing...`</p>}
                 <p className="usersInRoom">{clientCount} online </p>
                 </div>
                 <div>
@@ -232,3 +251,4 @@ const ChatPage = ({ newUsername, room }) => {
   );
 };
 export default ChatPage;
+
