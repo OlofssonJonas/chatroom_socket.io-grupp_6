@@ -143,12 +143,10 @@ h2#room-room {
 
 .chat-messages {
   width: 70rem;
-  align-items: end;
-  justify-content: end;
+
   max-height: 500px;
   overflow-y: scroll;
-  padding: 20px;
-  align-items: end;
+  padding: 20px; 
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -192,14 +190,18 @@ font-size: 12px;
 }
 
 #you{
-  padding-right: 50px;
-  background-color: #003194;
-  justify-content: flex-start;
+
+  margin-right: 50%;
+  margin-bottom: 20px;
+  
+
 }
 
-/* #other .msgBubble{
-  background-color: #000;
-} */
+#other {
+  background-color: aqua;
+  margin-left: 50%;
+  margin-bottom: 20px;
+}
 
 .chat-form-container {
   display: flex;
