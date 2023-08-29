@@ -15,3 +15,5 @@ installera alla dependencies och därefter npm run dev så är servern igång.
 
 Öppna ett nytt terminalfönster och navigera sedan till client-mappen genom att köra följande kommando: cd klient, kör sedan npm i för att installera alla dependencies och därefter npm run dev så är även klenten igång och du kan börja chatta.
 
+
+Du kan även skriva '/gif' i meddelande fältet för att skicka iväg en random gif.

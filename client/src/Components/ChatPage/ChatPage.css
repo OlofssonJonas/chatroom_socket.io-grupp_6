@@ -80,6 +80,7 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
 #room-name input {
   width: 13vh;
   height: 3vh;
+  margin-bottom: 10px;
 }
 
 .usersInRoom {
@@ -98,6 +99,7 @@ input {
   height: 2rem;
   border-radius: 10px;
   border: solid 1px #717171;
+  padding: 5px;
 }
 
 .roomSettings {
@@ -197,17 +199,18 @@ font-size: 12px;
 #you{
   margin-left: 50%;
   margin-bottom: 20px;
-
-  
-
 }
 
 #other {
   margin-right: 50%;
   margin-bottom: 20px;
 
- 
 }
+
+img{
+  width: 30vh;
+}
+
 
 .chat-form-container {
   display: flex;
