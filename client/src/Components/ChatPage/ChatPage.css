@@ -156,6 +156,7 @@ h2#room-room {
 .inputAndBtn{
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
 }
 
 .chat-messages .message {
@@ -189,18 +190,23 @@ font-size: 12px;
   padding: 5px;
 }
 
-#you{
+#you .msgBubble{
+  background-color: rgb(212, 212, 212);
+}
 
-  margin-right: 50%;
+#you{
+  margin-left: 50%;
   margin-bottom: 20px;
+
   
 
 }
 
 #other {
-  background-color: aqua;
-  margin-left: 50%;
+  margin-right: 50%;
   margin-bottom: 20px;
+
+ 
 }
 
 .chat-form-container {
