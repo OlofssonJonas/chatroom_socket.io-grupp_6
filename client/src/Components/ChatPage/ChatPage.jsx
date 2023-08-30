@@ -215,10 +215,7 @@ const ChatPage = ({ newUsername, room }) => {
 
 
 
-              
-
-
-
+            
 
                 {messageList.map((messageContent, idx) => (
                   <div key={idx}  id={newUsername === messageContent.author ? "you" : "other"} >
@@ -227,9 +224,9 @@ const ChatPage = ({ newUsername, room }) => {
                     {messageContent.time} {messageContent.author}{" "}</div>
                       <div className="msgBubble">
                     {messageContent.msg}
+                </div>
                     <div className="gifContainer">
                     {randomGifUrl && <img src={randomGifUrl} alt="Random Gif" />}
-                </div>
                     </div>
                   </div>
                 ))}
