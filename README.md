@@ -1,19 +1,14 @@
-# React + Vite
+**Användning:**
+Applikationen avser ett chatrum där olika användare skapar ett användarnamn där de sedan skickar viader till en Lobby för att kunna börja chatta. Användarna kan även välja att byta eller skapa nya rum. Det finns även möjlighet att skicka gif:ar.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**För att starta applikationen:**
+Navigera till server-mappen genom att köra följande kommando i terminalen: "cd server". Kör sedan "npm i" för att installera alla dependencies och därefter "npm run dev" för att starta servern. 
 
-Currently, two official plugins are available:
+Öppna ett nytt terminalfönster och navigera sedan till client-mappen genom att köra följande kommando: "cd klient". Kör sedan "npm i" för att installera alla dependencies och därefter "npm run dev" för att starta klienten.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+För att möjliggöra att skicka gif-filer behöver en env-fil ligga i projektet med API-nykeln.
 
-För att starta applikationen:
-
-Navigera till server-mappen genom att köra följande kommando i terminalen: cd server, kör sedan npm i för att 
-installera alla dependencies och därefter npm run dev så är servern igång.
+För användaren att skicka en random gif skrivs meddelandet "/gif" i inputfältet. 
 
 
-Öppna ett nytt terminalfönster och navigera sedan till client-mappen genom att köra följande kommando: cd klient, kör sedan npm i för att installera alla dependencies och därefter npm run dev så är även klenten igång och du kan börja chatta.
 
-
-Du kan även skriva '/gif' i meddelande fältet för att skicka iväg en random gif.
