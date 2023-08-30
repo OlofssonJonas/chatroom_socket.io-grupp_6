@@ -3,7 +3,6 @@ import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
 import ScrollToBottom from "react-scroll-to-bottom";
-import axios from "axios";
 
 const ChatPage = ({ newUsername, room }) => {
   const socket = useSocket(); //using socket from context!
@@ -18,41 +17,19 @@ const ChatPage = ({ newUsername, room }) => {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
-  const [randomGifUrl, setRandomGifUrl] = useState("");
   const inputRef = useRef(null);
-
-  const fetchRandomGif = async () => {
-    try {
-      const endpoint = `https://api.giphy.com/v1/gifs/random?api_key=${
-        import.meta.env.VITE_API_KEY
-      }`;
-
-      const response = await axios.get(endpoint);
-      if (response.status === 200) {
-        const gifUrl = response.data.data.images.original.url;
-        console.log(response.data.data.images.original.url);
-        setRandomGifUrl(gifUrl);
-      }
-    } catch (error) {
-      console.error("Error fetching random GIF:", error);
-    }
-  };
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
-      if (currentMessage === "/gif") {
-        fetchRandomGif();
-        setCurrentMessage("");
-        inputRef.current.focus();
-      } else if (currentMessage !== "") {
+      if (currentMessage !== "") {
         const messageData = {
           room: currentRoom,
           author: newUsername,
           msg: currentMessage,
-          time:
-            new Date(Date.now()).getHours() +
-            ":" +
-            new Date(Date.now()).getMinutes(),
+          time: new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+
         };
 
         await socket.emit("send_message", messageData);
@@ -61,6 +38,7 @@ const ChatPage = ({ newUsername, room }) => {
       }
     }
   };
+
 
   const checkRoomInput = (e) => {
     if (e.key === "Enter" || !e.key) {
@@ -74,7 +52,7 @@ const ChatPage = ({ newUsername, room }) => {
           setSelectedRoom(newRoom);
           changeRoom();
           setMessageList([]);
-          setNewroom("");
+           setNewroom("");
           inputRef.current.focus();
         }
       } else {
@@ -190,18 +168,18 @@ const ChatPage = ({ newUsername, room }) => {
                 ))}
               </select>
               <button className="smallBtn" onClick={joinSelectedRoom}>
-                Change room
+                Switch room
               </button>
               <div id="room-name">
+                <br></br>
                 <input
                   type="text"
                   onKeyDown={checkRoomInput}
                   ref={inputRef}
                   value={newRoom}
-                  placeholder="new room"
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-
+                <br></br>
                 <button className="smallBtn" onClick={checkRoomInput}>
                   Create new room
                 </button>
@@ -210,46 +188,38 @@ const ChatPage = ({ newUsername, room }) => {
             <div className="chat-messages">
               <ScrollToBottom className="message_container">
                 {messageList.map((messageContent, idx) => (
-                  <div
-                    key={idx}
-                    id={newUsername === messageContent.author ? "you" : "other"}
-                  >
+                  <div key={idx}  id={newUsername === messageContent.author ? "you" : "other"} >
+                   
                     <div className="msgText">
-                      {messageContent.time} {messageContent.author}{" "}
+                    {messageContent.time} {messageContent.author}{" "}</div>
+                      <div className="msgBubble">
+                    {messageContent.msg}
                     </div>
-                    <div className="msgBubble">
-                      {messageContent.msg}
-                      </div>
-                      {/* <div className="gifContainer">
-                        {randomGifUrl && (
-                          <img src={randomGifUrl} alt="Random Gif" />
-                        )}
-                      </div> */}
                   </div>
                 ))}
               </ScrollToBottom>
               <div className="inputAndBtn">
                 <div className="isTyping">
-                  {isTyping && <p>`Someone is typing...`</p>}
-                  <p className="usersInRoom">{clientCount} online </p>
+                  {isTyping && <p>`{newUsername} is typing...`</p>}
+                <p className="usersInRoom">{clientCount} online </p>
                 </div>
                 <div>
-                  <input
-                    id="msg"
-                    type="text"
-                    ref={inputRef}
-                    onKeyDown={sendMessage}
-                    value={currentMessage}
-                    placeholder="message..."
-                    onChange={(e) => {
-                      setCurrentMessage(e.target.value);
-                      handleInputChange(e);
-                    }}
-                    required
-                  />
-                  <button onClick={sendMessage} className="btn">
-                    Send
-                  </button>
+                <input
+                  id="msg"
+                  type="text"
+                  ref={inputRef}
+                  onKeyDown={sendMessage}
+                  value={currentMessage}
+                  placeholder="message..."
+                  onChange={(e) => {
+                    setCurrentMessage(e.target.value);
+                    handleInputChange(e);
+                  }}
+                  required
+                />
+                <button onClick={sendMessage} className="btn">
+                  Send
+                </button>
                 </div>
               </div>
             </div>
