@@ -219,12 +219,12 @@ const ChatPage = ({ newUsername, room }) => {
                     </div>
                     <div className="msgBubble">
                       {messageContent.msg}
+                      </div>
                       {/* <div className="gifContainer">
                         {randomGifUrl && (
                           <img src={randomGifUrl} alt="Random Gif" />
                         )}
                       </div> */}
-                    </div>
                   </div>
                 ))}
               </ScrollToBottom>
