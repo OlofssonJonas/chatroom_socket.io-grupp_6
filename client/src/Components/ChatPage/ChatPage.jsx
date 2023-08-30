@@ -18,6 +18,7 @@ const ChatPage = ({ newUsername, room }) => {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
   const inputRef = useRef(null);
+  const [userList, setUserList] = useState([]);
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
@@ -37,7 +38,6 @@ const ChatPage = ({ newUsername, room }) => {
     }
   };
 
-
   const checkRoomInput = (e) => {
     if (e.key === "Enter" || !e.key) {
       if (newRoom.trim() != "") {
@@ -46,7 +46,9 @@ const ChatPage = ({ newUsername, room }) => {
         } else {
           //sending username and room to the server(terminal).
           socket.emit("start_chat_with_room", newRoom);
-          console.log(newRoom);
+          socket.emit("start_chat_with_user", room, newUsername);
+
+          console.log("fron klient", room);
           setCurrentRoom(newRoom);
           setSelectedRoom(newRoom);
           changeRoom();
@@ -136,6 +138,12 @@ const ChatPage = ({ newUsername, room }) => {
     window.addEventListener("beforeunload", handleUnload);
   }, [socket, currentRoom]);
 
+  useEffect(() => {
+    socket.on("userList", (users) => {
+      setUserList(users);
+    });
+  }, []);
+
   return (
     <>
       {!leaveChat ? (
@@ -155,6 +163,14 @@ const ChatPage = ({ newUsername, room }) => {
               <h5>
                 <i className="fas fa-comments"></i> In room: {currentRoom}
               </h5>
+              <hr></hr>
+              <h5>User List in {currentRoom}:</h5>
+              <ul>
+                {userList.map((user, index) => (
+                  <li key={index}>{user}</li>
+                ))}
+              </ul>
+              <br></br>
               <hr></hr>
               <br></br>
               <select
