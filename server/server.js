@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const app = express();
-const server = http.createServer(app); 
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -17,7 +17,7 @@ app.use(cors());
 
 // Set to keep track of created rooms
 const createdRoom = new Set();
-
+let connectedUsers = {};
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join("Lobbyn");
@@ -27,7 +27,9 @@ io.on("connection", (socket) => {
 
   socket.on("start_chat_with_user", (username, room) => {
     console.log(`User with name: ${username} has joined the ${room}`);
-    socket.broadcast.to("start_chat_with_user", username);
+    // Lägg till användaren och rummet i din lista
+    connectedUsers[socket.id] = { username, room };
+    io.emit("userList", Object.values(connectedUsers));
     //Counting clients in room
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
@@ -38,14 +40,21 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     delete socket.room;
 
+    // Ta bort användaren från listan vid frånkoppling
+    delete connectedUsers[socket.id];
+    io.emit("userList", Object.values(connectedUsers));
+
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
     io.to("Lobbyn").emit("clientsInRoom", numberOfClients);
     console.log("disconnected", io.sockets.adapter.rooms);
   });
 
-
   socket.on("changeRoom", (roomName) => {
+    if (connectedUsers[socket.id]) {
+      connectedUsers[socket.id].currentRoom = roomName;
+      io.emit("userList", Object.values(connectedUsers));
+    }
     socket.leave(roomName);
     if (roomName !== "Lobbyn") {
       const roomClients = io.sockets.adapter.rooms.get(roomName);
@@ -68,6 +77,7 @@ io.on("connection", (socket) => {
           if (!roomClients || roomClients.size === 0) {
             createdRoom.delete(currentRoom); // Ta bort tomma rum från createdRoom
             io.emit("roomList", Array.from(createdRoom));
+            console.log(currentRoom, "nejnej");
           }
         }
       }

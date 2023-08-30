@@ -5,11 +5,14 @@ import Users from "../Users/Users";
 import ScrollToBottom from "react-scroll-to-bottom";
 
 const ChatPage = ({ newUsername, room }) => {
+  // console.log("Current room received:", room);
   const socket = useSocket(); //using socket from context!
 
   const [newRoom, setNewroom] = useState("");
   const [roomList, setRoomlist] = useState(["Lobbyn"]);
-  const [currentRoom, setCurrentRoom] = useState("Lobbyn");
+  // const [currentRoom, setCurrentRoom] = useState("Lobbyn");
+  const [currentRoom, setCurrentRoom] = useState(room);
+
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [leaveChat, setLeaveChat] = useState(false);
@@ -18,6 +21,10 @@ const ChatPage = ({ newUsername, room }) => {
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
   const inputRef = useRef(null);
+  const [userList, setUserList] = useState([]);
+  useEffect(() => {
+    setCurrentRoom(room);
+  }, [room]);
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
@@ -36,7 +43,6 @@ const ChatPage = ({ newUsername, room }) => {
     }
   };
 
-
   const checkRoomInput = (e) => {
     if (e.key === "Enter" || !e.key) {
       if (newRoom.trim() != "") {
@@ -49,7 +55,7 @@ const ChatPage = ({ newUsername, room }) => {
           setSelectedRoom(newRoom);
           changeRoom();
           setMessageList([]);
-           setNewroom("");
+          setNewroom("");
           inputRef.current.focus();
         }
       } else {
@@ -77,6 +83,7 @@ const ChatPage = ({ newUsername, room }) => {
       } else {
         socket.emit("start_chat_with_room", selectedRoom);
         setCurrentRoom(selectedRoom);
+        console.log("Current Room after update:", currentRoom);
         changeRoom();
       }
     }
@@ -85,11 +92,14 @@ const ChatPage = ({ newUsername, room }) => {
   useEffect(() => {
     socket.on("roomList", (rooms) => {
       setRoomlist(rooms);
+      // console.log(rooms);
     });
-  }, [socket]);
 
-  //listens for rooms-list updates from server
-  useEffect(() => {
+    socket.on("userList", (users) => {
+      setUserList(users);
+      console.log("Room in Users:", room);
+    });
+
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
     });
@@ -128,6 +138,7 @@ const ChatPage = ({ newUsername, room }) => {
   }, [socket, isTyping, clearTimeout]);
 
   useEffect(() => {
+    console.log("Current room changed:", currentRoom);
     const handleUnload = () => {
       socket.emit("changeRoom", currentRoom);
     };
@@ -154,6 +165,16 @@ const ChatPage = ({ newUsername, room }) => {
                 <i className="fas fa-comments"></i> In room: {currentRoom}
               </h5>
               <hr></hr>
+              <h5>Users & Room</h5>
+              <hr></hr>
+              <ul>
+                {userList.map((user, idx) => (
+                  <li key={idx}>
+                    {user.username} - {user.currentRoom}
+                  </li>
+                ))}
+              </ul>
+
               <select
                 value={currentRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -194,25 +215,25 @@ const ChatPage = ({ newUsername, room }) => {
               <div className="inputAndBtn">
                 <div className="isTyping">
                   {isTyping && <p>`{newUsername} is typing...`</p>}
-                <p className="usersInRoom">{clientCount} online </p>
+                  <p className="usersInRoom">{clientCount} online </p>
                 </div>
                 <div>
-                <input
-                  id="msg"
-                  type="text"
-                  ref={inputRef}
-                  onKeyDown={sendMessage}
-                  value={currentMessage}
-                  placeholder="message..."
-                  onChange={(e) => {
-                    setCurrentMessage(e.target.value);
-                    handleInputChange(e);
-                  }}
-                  required
-                />
-                <button onClick={sendMessage} className="btn">
-                  Send
-                </button>
+                  <input
+                    id="msg"
+                    type="text"
+                    ref={inputRef}
+                    onKeyDown={sendMessage}
+                    value={currentMessage}
+                    placeholder="message..."
+                    onChange={(e) => {
+                      setCurrentMessage(e.target.value);
+                      handleInputChange(e);
+                    }}
+                    required
+                  />
+                  <button onClick={sendMessage} className="btn">
+                    Send
+                  </button>
                 </div>
               </div>
             </div>
