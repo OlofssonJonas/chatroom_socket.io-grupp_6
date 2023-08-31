@@ -211,6 +211,7 @@ const ChatPage = ({ newUsername, room }) => {
               <button className="smallBtn" onClick={joinSelectedRoom}>
                 Change room
               </button>
+              <br></br>
               <div id="room-name">
                 <input
                   type="text"
