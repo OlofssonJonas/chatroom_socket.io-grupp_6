@@ -251,6 +251,12 @@ font-size: 12px;
 }
 
 .counter {
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
+
+.users_room {
+  margin: 0;
+  padding: 0;
+}
+
  

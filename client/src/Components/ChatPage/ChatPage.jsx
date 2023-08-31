@@ -191,7 +191,7 @@ const ChatPage = ({ newUsername, room }) => {
               </h5>
               <hr></hr>
               <h5>Users & Room</h5>
-              <hr></hr>
+            <hr className="users_room"></hr>
               <select className="counter">
                 {userList.map((user, idx) => (
                   <option key={idx}>
@@ -238,11 +238,9 @@ const ChatPage = ({ newUsername, room }) => {
                     </div>
                     <div className="msgBubble">
                       {!messageContent.url ? messageContent.msg : null}
-                     
                         {messageContent.url && (
-                          <img className="msgBubble" src={messageContent.url} alt="Random Gif" />
+                          <img cla src={messageContent.url} alt="Random Gif" />
                         )}
-                    
                     </div>
                   </div>
                 ))}
