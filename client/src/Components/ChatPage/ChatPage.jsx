@@ -10,8 +10,8 @@ const ChatPage = ({ newUsername, room }) => {
 
   const [newRoom, setNewroom] = useState("");
   const [roomList, setRoomlist] = useState(["Lobbyn"]);
-  // const [currentRoom, setCurrentRoom] = useState("Lobbyn");
-  const [currentRoom, setCurrentRoom] = useState(room);
+  const [currentRoom, setCurrentRoom] = useState("Lobbyn");
+  // const [currentRoom, setCurrentRoom] = useState(room);
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
@@ -43,6 +43,7 @@ const ChatPage = ({ newUsername, room }) => {
         await socket.emit("send_message", messageData);
         setCurrentMessage("");
         inputRef.current.focus();
+        console.log(messageData);
       }
     }
   };
@@ -105,11 +106,12 @@ const ChatPage = ({ newUsername, room }) => {
     socket.on("userList", (users) => {
       setUserList(users);
       // console.log("Room in Users:", room);
-      console.log("Room in Users:", users);
+      // console.log("Room in Users:", users);
     });
     fetchUserList();
 
     socket.on("receive_message", (data) => {
+      console.log("Received message:", data);
       setMessageList((list) => [...list, data]);
     });
 
@@ -147,7 +149,7 @@ const ChatPage = ({ newUsername, room }) => {
   }, [socket, isTyping, clearTimeout]);
 
   useEffect(() => {
-    console.log("Current room changed:", currentRoom);
+    // console.log("Current room changed:", currentRoom);
     const handleUnload = () => {
       socket.emit("changeRoom", currentRoom);
     };

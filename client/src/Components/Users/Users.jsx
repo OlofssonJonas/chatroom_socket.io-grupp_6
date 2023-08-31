@@ -11,7 +11,7 @@ export const Users = () => {
   const [currentRoom, setCurrentRoom] = useState("");
 
   useEffect(() => {
-    if (currentRoom === "Lobby") {
+    if (currentRoom === "Lobbyn") {
       socket.emit("start_chat_with_user", newUsername, currentRoom);
     }
   }, [currentRoom, newUsername, socket]);
@@ -26,7 +26,7 @@ export const Users = () => {
   const checkUserInput = () => {
     if (newUsername.trim() != "") {
       setShowLobby(true);
-      setCurrentRoom("Lobby");
+      setCurrentRoom("Lobbyn");
     } else {
       alert("Användarnamn får inte vara tomt.");
     }
