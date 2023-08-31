@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Users.css";
 import ChatPage from "../ChatPage/ChatPage";
 import { useSocket } from "../../Context/ContextForSocket";
 
 export const Users = () => {
   const [showLobby, setShowLobby] = useState(false);
-  const room = "Lobby"; //här kommer lobby fram
-
   const socket = useSocket(); //using socket from context!
 
   const [newUsername, setNewUsername] = useState("");
-  // const [currentRoom, setCurrentRoom] = useState("Lobby");
   const [currentRoom, setCurrentRoom] = useState("");
+
+  useEffect(() => {
+    if (currentRoom === "Lobby") {
+      socket.emit("start_chat_with_user", newUsername, currentRoom);
+    }
+  }, [currentRoom, newUsername, socket]);
 
   const start_chat_with_user = (e) => {
     if (e.key === "Enter" || !e.key) {
       socket.connect();
-      // setCurrentRoom("Lobby");
       checkUserInput();
     }
   };
@@ -25,11 +27,11 @@ export const Users = () => {
     if (newUsername.trim() != "") {
       setShowLobby(true);
       setCurrentRoom("Lobby");
-      socket.emit("start_chat_with_user", newUsername, currentRoom);
     } else {
       alert("Användarnamn får inte vara tomt.");
     }
   };
+
   const handleCreateRoom = (roomName) => {
     setCurrentRoom(roomName); // Uppdatera currentRoom när du skapar ett nytt rum
     socket.emit("start_chat_with_room", roomName);

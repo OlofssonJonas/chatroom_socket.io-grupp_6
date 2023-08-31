@@ -26,6 +26,10 @@ const ChatPage = ({ newUsername, room }) => {
     setCurrentRoom(room);
   }, [room]);
 
+  const fetchUserList = () => {
+    socket.emit("get_user_list");
+  };
+
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
       if (currentMessage !== "") {
@@ -44,12 +48,13 @@ const ChatPage = ({ newUsername, room }) => {
   };
 
   const checkRoomInput = (e) => {
+    console.log("Innan Current room changed:", currentRoom);
+
     if (e.key === "Enter" || !e.key) {
       if (newRoom.trim() != "") {
         if (newRoom === currentRoom) {
           alert("Du har redan skapat rummet!");
         } else {
-          //sending username and room to the server(terminal).
           socket.emit("start_chat_with_room", newRoom);
           setCurrentRoom(newRoom);
           setSelectedRoom(newRoom);
@@ -58,6 +63,8 @@ const ChatPage = ({ newUsername, room }) => {
           setNewroom("");
           inputRef.current.focus();
         }
+        console.log("efter Current room changed:", currentRoom);
+        console.log("monica", newRoom);
       } else {
         alert("Fältet får inte vara tomt.");
       }
@@ -97,8 +104,10 @@ const ChatPage = ({ newUsername, room }) => {
 
     socket.on("userList", (users) => {
       setUserList(users);
-      console.log("Room in Users:", room);
+      // console.log("Room in Users:", room);
+      console.log("Room in Users:", users);
     });
+    fetchUserList();
 
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
@@ -170,7 +179,7 @@ const ChatPage = ({ newUsername, room }) => {
               <ul>
                 {userList.map((user, idx) => (
                   <li key={idx}>
-                    {user.username} - {user.currentRoom}
+                    {user.username} - {user.room}
                   </li>
                 ))}
               </ul>

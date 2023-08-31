@@ -26,8 +26,9 @@ io.on("connection", (socket) => {
   console.log("new client connected", socket.id);
 
   socket.on("start_chat_with_user", (username, room) => {
+    console.log("user till server", room);
+    //här skickas rum namnet
     console.log(`User with name: ${username} has joined the ${room}`);
-    // Lägg till användaren och rummet i din lista
     connectedUsers[socket.id] = { username, room };
     io.emit("userList", Object.values(connectedUsers));
     //Counting clients in room
@@ -65,6 +66,11 @@ io.on("connection", (socket) => {
     }
   });
 
+  function sendUpdatedUserList(socket) {
+    const userList = Object.values(connectedUsers);
+    io.to(socket.id).emit("userList", userList);
+  }
+
   socket.on("start_chat_with_room", (roomName) => {
     const currentRooms = Array.from(socket.rooms);
 
@@ -73,6 +79,7 @@ io.on("connection", (socket) => {
         socket.leave(currentRoom);
         if (currentRoom !== "Lobbyn") {
           const roomClients = io.sockets.adapter.rooms.get(currentRoom);
+          sendUpdatedUserList(socket);
 
           if (!roomClients || roomClients.size === 0) {
             createdRoom.delete(currentRoom); // Ta bort tomma rum från createdRoom
@@ -89,6 +96,9 @@ io.on("connection", (socket) => {
     }
 
     socket.join(roomName);
+
+    connectedUsers[socket.id].room = roomName;
+    io.emit("userList", Object.values(connectedUsers));
 
     console.log("Rum som är kvar:", io.sockets.adapter.rooms);
   });
