@@ -48,28 +48,31 @@ const ChatPage = ({ newUsername, room }) => {
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
-      let url;
-      if (currentMessage === "/gif") {
-        url = await fetchRandomGif();
-        setCurrentMessage("");
-        inputRef.current.focus();
+      if(currentMessage.trim('')) {
+        let url;
+        if (currentMessage === "/gif") {
+          url = await fetchRandomGif();
+          setCurrentMessage("");
+          inputRef.current.focus();
       }
 
-      const messageData = {
-        room: currentRoom,
-        author: newUsername,
-        msg: currentMessage,
-        url: url,
-        time:
+        
+        const messageData = {
+          room: currentRoom,
+          author: newUsername,
+          msg: currentMessage,
+          url: url,
+          time:
           new Date(Date.now()).getHours() +
           ":" +
           new Date(Date.now()).getMinutes(),
-      };
-      await socket.emit("send_message", messageData);
-      setCurrentMessage("");
-      inputRef.current.focus();
+        };
+        await socket.emit("send_message", messageData);
+        setCurrentMessage("");
+        inputRef.current.focus();
     }
-  };
+    }
+    };
 
   const checkRoomInput = (e) => {
     if (e.key === "Enter" || !e.key) {
@@ -227,7 +230,7 @@ const ChatPage = ({ newUsername, room }) => {
               </div>
             </div>
             <div className="chat-messages">
-              <ScrollToBottom className="chat-mesages">
+              <ScrollToBottom className="chat-scroll">
                 {messageList.map((messageContent, idx) => (
                   <div
                     key={idx}

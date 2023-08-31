@@ -114,6 +114,10 @@ input {
   justify-content: space-between;
 }
 
+.chat-scroll {
+  overflow: scroll;
+}
+
 .chat-sidebar {
   width: 60%;
   background-color: rgba(159, 171, 133, 0.2);
@@ -148,12 +152,8 @@ h2#room-room {
 
 .chat-messages {
   width: 70rem;
-
   max-height: 500px;
   overflow-y: scroll;
-  
-  /* margin-left: auto;
-  margin-right: auto; */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -171,6 +171,7 @@ h2#room-room {
   background-color: var(--light-color);
   border-radius: 5px;
   overflow-wrap: break-word;
+  overflow-y: scroll;
 }
 
 .chat-messages .message .meta {
@@ -195,6 +196,7 @@ font-size: 12px;
   border-radius: 10px;
   padding: 5px;
 }
+
 
 #you .msgBubble{
   background-color: rgb(212, 212, 212);
