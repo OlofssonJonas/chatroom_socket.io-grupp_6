@@ -3,16 +3,14 @@ import "./ChatPage.css";
 import { useSocket } from "../../Context/ContextForSocket";
 import Users from "../Users/Users";
 import ScrollToBottom from "react-scroll-to-bottom";
+import axios from "axios";
 
 const ChatPage = ({ newUsername, room }) => {
-  // console.log("Current room received:", room);
   const socket = useSocket(); //using socket from context!
 
   const [newRoom, setNewroom] = useState("");
   const [roomList, setRoomlist] = useState(["Lobbyn"]);
   const [currentRoom, setCurrentRoom] = useState("Lobbyn");
-  // const [currentRoom, setCurrentRoom] = useState(room);
-
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [leaveChat, setLeaveChat] = useState(false);
@@ -20,7 +18,9 @@ const ChatPage = ({ newUsername, room }) => {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isTyping, setIstyping] = useState(false);
+  const [randomGifUrl, setRandomGifUrl] = useState("");
   const inputRef = useRef(null);
+
   const [userList, setUserList] = useState([]);
   useEffect(() => {
     setCurrentRoom(room);
@@ -30,27 +30,48 @@ const ChatPage = ({ newUsername, room }) => {
     socket.emit("get_user_list");
   };
 
+  const fetchRandomGif = async () => {
+    try {
+      const endpoint = `https://api.giphy.com/v1/gifs/random?api_key=${
+        import.meta.env.VITE_API_KEY
+      }`;
+
+      const response = await axios.get(endpoint);
+      if (response.status === 200) {
+        const gifUrl = response.data.data.images.original.url;
+        return gifUrl;
+      }
+    } catch (error) {
+      console.error("Error fetching random GIF:", error);
+    }
+  };
+
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
-      if (currentMessage !== "") {
-        const messageData = {
-          room: currentRoom,
-          author: newUsername,
-          msg: currentMessage,
-          time: new Date(),
-        };
-
-        await socket.emit("send_message", messageData);
+      let url;
+      if (currentMessage === "/gif") {
+        url = await fetchRandomGif();
         setCurrentMessage("");
         inputRef.current.focus();
-        console.log(messageData);
       }
+
+      const messageData = {
+        room: currentRoom,
+        author: newUsername,
+        msg: currentMessage,
+        url: url,
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      };
+      await socket.emit("send_message", messageData);
+      setCurrentMessage("");
+      inputRef.current.focus();
     }
   };
 
   const checkRoomInput = (e) => {
-    console.log("Innan Current room changed:", currentRoom);
-
     if (e.key === "Enter" || !e.key) {
       if (newRoom.trim() != "") {
         if (newRoom === currentRoom) {
@@ -62,10 +83,9 @@ const ChatPage = ({ newUsername, room }) => {
           changeRoom();
           setMessageList([]);
           setNewroom("");
+          setNewroom("");
           inputRef.current.focus();
         }
-        console.log("efter Current room changed:", currentRoom);
-        console.log("monica", newRoom);
       } else {
         alert("Fältet får inte vara tomt.");
       }
@@ -74,9 +94,9 @@ const ChatPage = ({ newUsername, room }) => {
   };
 
   const LeaveChat = () => {
-    socket.disconnect();
     setLeaveChat(true); //updating state
     changeRoom();
+    socket.disconnect();
   };
 
   const changeRoom = () => {
@@ -91,7 +111,6 @@ const ChatPage = ({ newUsername, room }) => {
       } else {
         socket.emit("start_chat_with_room", selectedRoom);
         setCurrentRoom(selectedRoom);
-        console.log("Current Room after update:", currentRoom);
         changeRoom();
       }
     }
@@ -100,18 +119,14 @@ const ChatPage = ({ newUsername, room }) => {
   useEffect(() => {
     socket.on("roomList", (rooms) => {
       setRoomlist(rooms);
-      // console.log(rooms);
     });
 
     socket.on("userList", (users) => {
       setUserList(users);
-      // console.log("Room in Users:", room);
-      // console.log("Room in Users:", users);
     });
     fetchUserList();
 
     socket.on("receive_message", (data) => {
-      console.log("Received message:", data);
       setMessageList((list) => [...list, data]);
     });
 
@@ -143,13 +158,11 @@ const ChatPage = ({ newUsername, room }) => {
       setTypingUsers((prevUsers) =>
         prevUsers.filter((user) => user !== data.userId)
       );
-      console.log("User stopped typing:", data.userId);
       setIstyping(false);
     });
   }, [socket, isTyping, clearTimeout]);
 
   useEffect(() => {
-    // console.log("Current room changed:", currentRoom);
     const handleUnload = () => {
       socket.emit("changeRoom", currentRoom);
     };
@@ -185,9 +198,8 @@ const ChatPage = ({ newUsername, room }) => {
                   </li>
                 ))}
               </ul>
-
               <select
-                value={currentRoom}
+                value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
               >
                 {roomList.map((roomName, idx) => (
@@ -197,18 +209,17 @@ const ChatPage = ({ newUsername, room }) => {
                 ))}
               </select>
               <button className="smallBtn" onClick={joinSelectedRoom}>
-                Switch room
+                Change room
               </button>
               <div id="room-name">
-                <br></br>
                 <input
                   type="text"
                   onKeyDown={checkRoomInput}
                   ref={inputRef}
                   value={newRoom}
+                  placeholder="new room"
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-                <br></br>
                 <button className="smallBtn" onClick={checkRoomInput}>
                   Create new room
                 </button>
@@ -217,15 +228,27 @@ const ChatPage = ({ newUsername, room }) => {
             <div className="chat-messages">
               <ScrollToBottom className="message_container">
                 {messageList.map((messageContent, idx) => (
-                  <p key={idx}>
-                    klockan {messageContent.time} skrev {messageContent.author}:{" "}
-                    {messageContent.msg}
-                  </p>
+                  <div
+                    key={idx}
+                    id={newUsername === messageContent.author ? "you" : "other"}
+                  >
+                    <div className="msgText">
+                      {messageContent.time} {messageContent.author}{" "}
+                    </div>
+                    <div className="msgBubble">
+                      {!messageContent.url ? messageContent.msg : null}
+                      <div className="gifContainer">
+                        {messageContent.url && (
+                          <img src={messageContent.url} alt="Random Gif" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </ScrollToBottom>
               <div className="inputAndBtn">
                 <div className="isTyping">
-                  {isTyping && <p>`{newUsername} is typing...`</p>}
+                  {isTyping && <p> Someone is typing...</p>}
                   <p className="usersInRoom">{clientCount} online </p>
                 </div>
                 <div>

@@ -21,8 +21,8 @@ let connectedUsers = {};
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join("Lobbyn");
-  createdRoom.add("Lobbyn", Array.from(createdRoom)); //add room to set
-  io.emit("roomList", Array.from(createdRoom)); // sending list of rooms to clients
+  createdRoom.add("Lobbyn", Array.from(createdRoom));
+  io.emit("roomList", Array.from(createdRoom));
   console.log("new client connected", socket.id);
 
   socket.on("start_chat_with_user", (username, room) => {
@@ -40,8 +40,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete socket.room;
-
-    // Ta bort användaren från listan vid frånkoppling
     delete connectedUsers[socket.id];
     io.emit("userList", Object.values(connectedUsers));
 
@@ -82,7 +80,7 @@ io.on("connection", (socket) => {
           sendUpdatedUserList(socket);
 
           if (!roomClients || roomClients.size === 0) {
-            createdRoom.delete(currentRoom); // Ta bort tomma rum från createdRoom
+            createdRoom.delete(currentRoom);
             io.emit("roomList", Array.from(createdRoom));
             console.log(currentRoom, "nejnej");
           }
