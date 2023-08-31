@@ -173,6 +173,7 @@ const ChatPage = ({ newUsername, room }) => {
     <>
       {!leaveChat ? (
         <div className="chat-container">
+          <div className="counter"></div>
           <header className="chat-header">
             <h1>
               <i className="fas fa-smile"></i> Chat
@@ -191,13 +192,13 @@ const ChatPage = ({ newUsername, room }) => {
               <hr></hr>
               <h5>Users & Room</h5>
               <hr></hr>
-              <ul>
+              <select className="counter">
                 {userList.map((user, idx) => (
-                  <li key={idx}>
+                  <option key={idx}>
                     {user.username} - {user.room}
-                  </li>
+                  </option>
                 ))}
-              </ul>
+              </select>
               <select
                 value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -226,7 +227,7 @@ const ChatPage = ({ newUsername, room }) => {
               </div>
             </div>
             <div className="chat-messages">
-              <ScrollToBottom className="message_container">
+              <ScrollToBottom className="chat-mesages">
                 {messageList.map((messageContent, idx) => (
                   <div
                     key={idx}
@@ -237,11 +238,11 @@ const ChatPage = ({ newUsername, room }) => {
                     </div>
                     <div className="msgBubble">
                       {!messageContent.url ? messageContent.msg : null}
-                      <div className="gifContainer">
+                     
                         {messageContent.url && (
-                          <img src={messageContent.url} alt="Random Gif" />
+                          <img className="msgBubble" src={messageContent.url} alt="Random Gif" />
                         )}
-                      </div>
+                    
                     </div>
                   </div>
                 ))}
