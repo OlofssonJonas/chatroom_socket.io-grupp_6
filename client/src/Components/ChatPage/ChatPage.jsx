@@ -21,6 +21,15 @@ const ChatPage = ({ newUsername, room }) => {
   const [randomGifUrl, setRandomGifUrl] = useState("");
   const inputRef = useRef(null);
 
+  const [userList, setUserList] = useState([]);
+  useEffect(() => {
+    setCurrentRoom(room);
+  }, [room]);
+
+  const fetchUserList = () => {
+    socket.emit("get_user_list");
+  };
+
   const fetchRandomGif = async () => {
     try {
       const endpoint = `https://api.giphy.com/v1/gifs/random?api_key=${
@@ -45,6 +54,7 @@ const ChatPage = ({ newUsername, room }) => {
         setCurrentMessage("");
         inputRef.current.focus();
       }
+
       const messageData = {
         room: currentRoom,
         author: newUsername,
@@ -72,6 +82,7 @@ const ChatPage = ({ newUsername, room }) => {
           setSelectedRoom(newRoom);
           changeRoom();
           setMessageList([]);
+          setNewroom("");
           setNewroom("");
           inputRef.current.focus();
         }
@@ -109,10 +120,12 @@ const ChatPage = ({ newUsername, room }) => {
     socket.on("roomList", (rooms) => {
       setRoomlist(rooms);
     });
-  }, [socket]);
 
-  //listens for rooms-list updates from server
-  useEffect(() => {
+    socket.on("userList", (users) => {
+      setUserList(users);
+    });
+    fetchUserList();
+
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
     });
@@ -176,6 +189,15 @@ const ChatPage = ({ newUsername, room }) => {
                 <i className="fas fa-comments"></i> In room: {currentRoom}
               </h5>
               <hr></hr>
+              <h5>Users & Room</h5>
+              <hr></hr>
+              <ul>
+                {userList.map((user, idx) => (
+                  <li key={idx}>
+                    {user.username} - {user.room}
+                  </li>
+                ))}
+              </ul>
               <select
                 value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -198,7 +220,6 @@ const ChatPage = ({ newUsername, room }) => {
                   placeholder="new room"
                   onChange={(e) => setNewroom(e.target.value)}
                 />
-
                 <button className="smallBtn" onClick={checkRoomInput}>
                   Create new room
                 </button>
@@ -227,7 +248,7 @@ const ChatPage = ({ newUsername, room }) => {
               </ScrollToBottom>
               <div className="inputAndBtn">
                 <div className="isTyping">
-                  {isTyping && <p>`Someone is typing...`</p>}
+                  {isTyping && <p> Someone is typing...</p>}
                   <p className="usersInRoom">{clientCount} online </p>
                 </div>
                 <div>

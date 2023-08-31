@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const app = express();
-const server = http.createServer(app); 
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -17,17 +17,20 @@ app.use(cors());
 
 // Set to keep track of created rooms
 const createdRoom = new Set();
-
+let connectedUsers = {};
 //Event-handling for sockiet.io
 io.on("connection", (socket) => {
   socket.join("Lobbyn");
-  createdRoom.add("Lobbyn", Array.from(createdRoom)); //add room to set
-  io.emit("roomList", Array.from(createdRoom)); // sending list of rooms to clients
+  createdRoom.add("Lobbyn", Array.from(createdRoom));
+  io.emit("roomList", Array.from(createdRoom));
   console.log("new client connected", socket.id);
 
   socket.on("start_chat_with_user", (username, room) => {
+    console.log("user till server", room);
+    //här skickas rum namnet
     console.log(`User with name: ${username} has joined the ${room}`);
-    socket.broadcast.to("start_chat_with_user", username);
+    connectedUsers[socket.id] = { username, room };
+    io.emit("userList", Object.values(connectedUsers));
     //Counting clients in room
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
@@ -37,6 +40,8 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     delete socket.room;
+    delete connectedUsers[socket.id];
+    io.emit("userList", Object.values(connectedUsers));
 
     const clientsInRoom = io.sockets.adapter.rooms.get("Lobbyn");
     const numberOfClients = clientsInRoom ? clientsInRoom.size : 0;
@@ -44,8 +49,11 @@ io.on("connection", (socket) => {
     console.log("disconnected", io.sockets.adapter.rooms);
   });
 
-
   socket.on("changeRoom", (roomName) => {
+    if (connectedUsers[socket.id]) {
+      connectedUsers[socket.id].currentRoom = roomName;
+      io.emit("userList", Object.values(connectedUsers));
+    }
     socket.leave(roomName);
     if (roomName !== "Lobbyn") {
       const roomClients = io.sockets.adapter.rooms.get(roomName);
@@ -56,6 +64,11 @@ io.on("connection", (socket) => {
     }
   });
 
+  function sendUpdatedUserList(socket) {
+    const userList = Object.values(connectedUsers);
+    io.to(socket.id).emit("userList", userList);
+  }
+
   socket.on("start_chat_with_room", (roomName) => {
     const currentRooms = Array.from(socket.rooms);
 
@@ -64,10 +77,12 @@ io.on("connection", (socket) => {
         socket.leave(currentRoom);
         if (currentRoom !== "Lobbyn") {
           const roomClients = io.sockets.adapter.rooms.get(currentRoom);
+          sendUpdatedUserList(socket);
 
           if (!roomClients || roomClients.size === 0) {
-            createdRoom.delete(currentRoom); // Ta bort tomma rum från createdRoom
+            createdRoom.delete(currentRoom);
             io.emit("roomList", Array.from(createdRoom));
+            console.log(currentRoom, "nejnej");
           }
         }
       }
@@ -80,11 +95,15 @@ io.on("connection", (socket) => {
 
     socket.join(roomName);
 
+    connectedUsers[socket.id].room = roomName;
+    io.emit("userList", Object.values(connectedUsers));
+
     console.log("Rum som är kvar:", io.sockets.adapter.rooms);
   });
 
   socket.on("send_message", (data) => {
     io.to(data.room).emit("receive_message", data);
+    console.log("medelandet bror", data.room);
   });
 
   socket.on("typing", (data) => {
