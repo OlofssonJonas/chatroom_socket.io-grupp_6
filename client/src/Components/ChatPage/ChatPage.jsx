@@ -173,7 +173,6 @@ const ChatPage = ({ newUsername, room }) => {
     <>
       {!leaveChat ? (
         <div className="chat-container">
-          <div className="counter"></div>
           <header className="chat-header">
             <h1>
               <i className="fas fa-smile"></i> Chat
