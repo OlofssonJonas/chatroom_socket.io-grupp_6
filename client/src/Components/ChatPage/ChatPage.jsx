@@ -30,9 +30,7 @@ const ChatPage = ({ newUsername, room }) => {
       const response = await axios.get(endpoint);
       if (response.status === 200) {
         const gifUrl = response.data.data.images.original.url;
-        console.log(response.data.data.images.original.url);
-        //setRandomGifUrl(gifUrl);
-        return gifUrl
+        return gifUrl;
       }
     } catch (error) {
       console.error("Error fetching random GIF:", error);
@@ -41,26 +39,25 @@ const ChatPage = ({ newUsername, room }) => {
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
-      let url
+      let url;
       if (currentMessage === "/gif") {
-         url = await fetchRandomGif();
+        url = await fetchRandomGif();
         setCurrentMessage("");
         inputRef.current.focus();
       }
-        const messageData = {
-          room: currentRoom,
-          author: newUsername,
-          msg: currentMessage,
-          url: url,
-          time:
-            new Date(Date.now()).getHours() +
-            ":" +
-            new Date(Date.now()).getMinutes(),
-        };
-        await socket.emit("send_message", messageData);
-        console.log(messageData)
-        setCurrentMessage("");
-        inputRef.current.focus();
+      const messageData = {
+        room: currentRoom,
+        author: newUsername,
+        msg: currentMessage,
+        url: url,
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      };
+      await socket.emit("send_message", messageData);
+      setCurrentMessage("");
+      inputRef.current.focus();
     }
   };
 
@@ -70,7 +67,6 @@ const ChatPage = ({ newUsername, room }) => {
         if (newRoom === currentRoom) {
           alert("Du har redan skapat rummet!");
         } else {
-          //sending username and room to the server(terminal).
           socket.emit("start_chat_with_room", newRoom);
           setCurrentRoom(newRoom);
           setSelectedRoom(newRoom);
@@ -87,9 +83,9 @@ const ChatPage = ({ newUsername, room }) => {
   };
 
   const LeaveChat = () => {
-    socket.disconnect();
     setLeaveChat(true); //updating state
     changeRoom();
+    socket.disconnect();
   };
 
   const changeRoom = () => {
@@ -149,7 +145,6 @@ const ChatPage = ({ newUsername, room }) => {
       setTypingUsers((prevUsers) =>
         prevUsers.filter((user) => user !== data.userId)
       );
-      console.log("User stopped typing:", data.userId);
       setIstyping(false);
     });
   }, [socket, isTyping, clearTimeout]);
@@ -182,7 +177,7 @@ const ChatPage = ({ newUsername, room }) => {
               </h5>
               <hr></hr>
               <select
-                value={currentRoom}
+                value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
               >
                 {roomList.map((roomName, idx) => (
@@ -226,7 +221,7 @@ const ChatPage = ({ newUsername, room }) => {
                           <img src={messageContent.url} alt="Random Gif" />
                         )}
                       </div>
-                      </div>
+                    </div>
                   </div>
                 ))}
               </ScrollToBottom>
