@@ -48,28 +48,31 @@ const ChatPage = ({ newUsername, room }) => {
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" || !e.key) {
-      let url;
-      if (currentMessage === "/gif") {
-        url = await fetchRandomGif();
-        setCurrentMessage("");
-        inputRef.current.focus();
+      if(currentMessage.trim('')) {
+        let url;
+        if (currentMessage === "/gif") {
+          url = await fetchRandomGif();
+          setCurrentMessage("");
+          inputRef.current.focus();
       }
 
-      const messageData = {
-        room: currentRoom,
-        author: newUsername,
-        msg: currentMessage,
-        url: url,
-        time:
+        
+        const messageData = {
+          room: currentRoom,
+          author: newUsername,
+          msg: currentMessage,
+          url: url,
+          time:
           new Date(Date.now()).getHours() +
           ":" +
           new Date(Date.now()).getMinutes(),
-      };
-      await socket.emit("send_message", messageData);
-      setCurrentMessage("");
-      inputRef.current.focus();
+        };
+        await socket.emit("send_message", messageData);
+        setCurrentMessage("");
+        inputRef.current.focus();
     }
-  };
+    }
+    };
 
   const checkRoomInput = (e) => {
     if (e.key === "Enter" || !e.key) {
@@ -190,14 +193,14 @@ const ChatPage = ({ newUsername, room }) => {
               </h5>
               <hr></hr>
               <h5>Users & Room</h5>
-              <hr></hr>
-              <ul>
+            <hr className="users_room"></hr>
+              <select className="counter">
                 {userList.map((user, idx) => (
-                  <li key={idx}>
+                  <option key={idx}>
                     {user.username} - {user.room}
-                  </li>
+                  </option>
                 ))}
-              </ul>
+              </select>
               <select
                 value={selectedRoom}
                 onChange={(e) => setSelectedRoom(e.target.value)}
@@ -211,6 +214,7 @@ const ChatPage = ({ newUsername, room }) => {
               <button className="smallBtn" onClick={joinSelectedRoom}>
                 Change room
               </button>
+              <br></br>
               <div id="room-name">
                 <input
                   type="text"
@@ -226,7 +230,7 @@ const ChatPage = ({ newUsername, room }) => {
               </div>
             </div>
             <div className="chat-messages">
-              <ScrollToBottom className="message_container">
+              <ScrollToBottom className="chat-scroll">
                 {messageList.map((messageContent, idx) => (
                   <div
                     key={idx}
@@ -237,11 +241,9 @@ const ChatPage = ({ newUsername, room }) => {
                     </div>
                     <div className="msgBubble">
                       {!messageContent.url ? messageContent.msg : null}
-                      <div className="gifContainer">
                         {messageContent.url && (
-                          <img src={messageContent.url} alt="Random Gif" />
+                          <img className="" src={messageContent.url} alt="Random Gif" />
                         )}
-                      </div>
                     </div>
                   </div>
                 ))}
