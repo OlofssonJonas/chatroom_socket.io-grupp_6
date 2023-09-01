@@ -74,13 +74,15 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
   border: solid 1px #ccc;
   border-radius: 10px;
   color: white;
+  margin: 10px;
 }
 
 
 #room-name input {
   width: 13vh;
   height: 3vh;
-  margin-bottom: 10px;
+
+  margin: 10px;
 }
 
 .usersInRoom {
@@ -93,6 +95,7 @@ select {
   height: 3vh;
   width: 13vh;
   border-radius: 10px;
+  margin: 10px;
 }
 
 input {
@@ -111,6 +114,10 @@ input {
   justify-content: space-between;
 }
 
+.chat-scroll {
+  overflow: scroll;
+}
+
 .chat-sidebar {
   width: 60%;
   background-color: rgba(159, 171, 133, 0.2);
@@ -118,7 +125,7 @@ input {
   padding: 26px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: flex-start;
 }
 
@@ -145,14 +152,11 @@ h2#room-room {
 
 .chat-messages {
   width: 70rem;
-
   max-height: 500px;
   overflow-y: scroll;
-  padding: 20px; 
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .inputAndBtn{
@@ -167,6 +171,7 @@ h2#room-room {
   background-color: var(--light-color);
   border-radius: 5px;
   overflow-wrap: break-word;
+  overflow-y: scroll;
 }
 
 .chat-messages .message .meta {
@@ -192,6 +197,7 @@ font-size: 12px;
   padding: 5px;
 }
 
+
 #you .msgBubble{
   background-color: rgb(212, 212, 212);
 }
@@ -207,8 +213,11 @@ font-size: 12px;
 
 }
 
-img{
-  width: 30vh;
+.msgBubble img{
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
 }
 
 
@@ -242,6 +251,20 @@ img{
   font-size: 16px;
   padding: 5px;
   height: 40px;
+}
+
+.counter {
+  margin-bottom: 50px;
+}
+
+.users_room {
+  margin: 0;
+  padding: 0;
+}
+
+.inputAndBtn {
+  margin-bottom: 10px;
+  margin-right: 10px;
 }
 
  
