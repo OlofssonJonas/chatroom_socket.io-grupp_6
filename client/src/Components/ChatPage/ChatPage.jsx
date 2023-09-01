@@ -242,7 +242,7 @@ const ChatPage = ({ newUsername, room }) => {
                     <div className="msgBubble">
                       {!messageContent.url ? messageContent.msg : null}
                         {messageContent.url && (
-                          <img cla src={messageContent.url} alt="Random Gif" />
+                          <img className="" src={messageContent.url} alt="Random Gif" />
                         )}
                     </div>
                   </div>
